@@ -3,6 +3,7 @@ package cs342project5;
 
 import java.net.*;
 import java.util.ArrayList;
+import java.util.Vector;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
@@ -30,6 +31,7 @@ public class Client extends JFrame{
 	private String name;
 	
 	public Client(){
+		super("Client");
 		setLayout(new BorderLayout());
 		usersModel = new DefaultListModel();
 		Users = new JList(usersModel);
@@ -65,10 +67,10 @@ public class Client extends JFrame{
 		file.add(connect);
 		file.add(leave);
 		file.add(quit);
+
+		gameMenu.add(newGame);
 		gameMenu.add(joinGame);
 
-		gameMenu.add(joinGame);
-		gameMenu.add(newGame);
 		
 		menuBar.add(file);
 		menuBar.add(gameMenu);
@@ -80,7 +82,7 @@ public class Client extends JFrame{
 		add(message, BorderLayout.SOUTH);
 
 		setSize(640,480);
-
+		addWindowListener(new ClientWindowListener());
 		setVisible(true);
 	}
 	/**
@@ -104,6 +106,14 @@ public class Client extends JFrame{
 				close();
 				System.exit(0);
 			}
+
+			if(newGame == e.getSource()){
+				//If a string was returned, say so.
+				Vector<String> recipiants = new Vector<String>();
+				recipiants.add("Server");
+				send(new Envelope(name, "Announce.", recipiants));
+			}
+
 			if(joinGame == e.getSource()){
 				String s = (String)JOptionPane.showInputDialog(
 				                    null,
@@ -113,14 +123,15 @@ public class Client extends JFrame{
 				                    null,
 				                    null,
 				                    "0");
-
+				if(s == null)
+				{
+					return;
+				}
 				//If a string was returned, say so.
-				
-
 				if ((s != null) && (s.length() > 0)) {
-					ArrayList<String> recipiants = new ArrayList<String>();
+					Vector<String> recipiants = new Vector<String>();
 					recipiants.add("Server");
-					send(new Envelope(name, "Join. "+ s  , recipiants));
+					send(new Envelope(name, "JoinGame. "+ s  , recipiants));
 				}
 			}
 			/*
@@ -130,7 +141,7 @@ public class Client extends JFrame{
 			{
 				//Retrieve the selected users from the users JList.
 				Object selectedUsers[] = Users.getSelectedValues();
-				ArrayList<String> recipiants = new ArrayList<String>();
+				Vector<String> recipiants = new Vector<String>();
 				//Add it to the recipiants.
 				for(int i=0; i<selectedUsers.length; i++)
 				{	
@@ -151,7 +162,6 @@ public class Client extends JFrame{
 					out.writeObject(ev);
 					out.flush();
 				} catch (IOException ex) {
-					// TODO Auto-generated catch block
 					ex.printStackTrace();
 				}
 				message.setText("");
@@ -173,6 +183,8 @@ public class Client extends JFrame{
 						null,
 						null,
 						"127.0.0.1");
+		if(ipAddress == null)
+			return;
 		//Get the name of the user.
 		name = (String)JOptionPane.showInputDialog(
 				null,
@@ -182,13 +194,15 @@ public class Client extends JFrame{
 						null,
 						null,
 						"brian");
+		if(name == null)
+			return;
 		try{
 			//Open the socket and get the input/output streams.
 			socket = new Socket(ipAddress,25565);
 			out = new ObjectOutputStream(socket.getOutputStream());
 			in  = new ObjectInputStream(socket.getInputStream());
 			//Send inital connection envelope.
-			ArrayList<String> recipiants = new ArrayList<String>();
+			Vector<String> recipiants = new Vector<String>();
 			recipiants.add("Server");
 			Envelope e = new Envelope(name, "Initial Connection.", recipiants);
 			send(e);
@@ -208,8 +222,8 @@ public class Client extends JFrame{
 	 * Sends a leave message to the server.
 	 */
 	public void leave(){
-		ArrayList<String> recipiants = new ArrayList<String>();
-		recipiants.add(name);
+		Vector<String> recipiants = new Vector<String>();
+		recipiants.add("Server");
 		Envelope end = new Envelope(name,"Leave.", recipiants);
 		send(end);
 	}
@@ -218,7 +232,6 @@ public class Client extends JFrame{
 			out.writeObject(e);
 			out.flush();
 		} catch (IOException ex) {
-			// TODO Auto-generated catch block
 			ex.printStackTrace();
 		}
 	}
@@ -227,7 +240,6 @@ public class Client extends JFrame{
 			out.writeObject(g);
 			out.flush();
 		} catch (IOException ex) {
-			// TODO Auto-generated catch block
 			ex.printStackTrace();
 		}
 	}
@@ -266,12 +278,7 @@ public class Client extends JFrame{
 			Envelope e = null;
 			Game g = null;
 			try {
-				Object o = in.readObject();
-				if(o instanceof Envelope){
-					e = (Envelope) o;
-				}else if(o instanceof Game){
-					g = (Game) g;
-				}
+				Object o = null;
 				/*
 				 * Loop to check for incoming messages.
 				 */
@@ -298,8 +305,6 @@ public class Client extends JFrame{
 						g = (Game) g;
 						updateGame(g);
 					}
-					
-				
 				}
 			} catch (IOException ex) {
 				ex.printStackTrace();
@@ -309,5 +314,43 @@ public class Client extends JFrame{
 		}
 
 	}
+	private class ClientWindowListener implements WindowListener{
 
+		@Override
+		public void windowActivated(WindowEvent arg0) {
+			
+		}
+
+		@Override
+		public void windowClosed(WindowEvent arg0) {
+			
+		}
+
+		@Override
+		public void windowClosing(WindowEvent arg0) {
+			leave();
+			close();
+		}
+
+		@Override
+		public void windowDeactivated(WindowEvent arg0) {
+			
+		}
+
+		@Override
+		public void windowDeiconified(WindowEvent arg0) {
+			
+		}
+
+		@Override
+		public void windowIconified(WindowEvent arg0) {
+			
+		}
+
+		@Override
+		public void windowOpened(WindowEvent arg0) {
+			
+		}
+		
+	}
 }

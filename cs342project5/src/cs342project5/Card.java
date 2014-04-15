@@ -1,6 +1,8 @@
 package cs342project5;
 
-public class Card implements Comparable<Card>{
+import java.io.Serializable;
+
+public class Card implements Comparable<Card>, Serializable{
 	private int suit;
 	private int rank;
 	char suit2char[]={' ', 'C','D','H','S'}; 
@@ -11,14 +13,8 @@ public class Card implements Comparable<Card>{
 	 * @param s, suit (1-4)
 	 * @throws InvalidCardException
 	 */
-	public Card(int r, int s) throws InvalidCardException
+	public Card(int r, int s) 
 	{
-		if(check(r,s) == false)
-		{
-			System.err.println("r:" + r +" s:" +s);
-			throw new InvalidCardException();
-			
-		}
 		suit = s;
 		rank = r;
 	}

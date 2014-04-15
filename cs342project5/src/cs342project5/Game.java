@@ -8,20 +8,24 @@ public class Game implements Serializable{
 	private Deck discard;
 	private Deck active;
 	private ArrayList<Player> Players;
+	private final int[] HowManyToDeal = { 10, 10, 7, 7 ,6, 6};
 	public Game(int i){
 		active = new Deck();
 		active.generateDeck();
 		discard = new Deck();
 		Players = new ArrayList<Player>();
-		id= i;
+		id=i;
 	}
 	public Deck discard(){
 		return discard;
 	}
 	public void addPlayer(String name){
-		ArrayList<Card> delt = active.deal();
-		Player p = new Player(name, delt);
+		Player p = new Player(name);
 		Players.add(p);
+	}
+	public void deal(){
+		for(Player p : Players)
+			p.setCardsInHand(active.deal(HowManyToDeal[Players.size()]));
 	}
 	public Player getPlayer(String name)
 	{

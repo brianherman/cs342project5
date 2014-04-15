@@ -6,13 +6,15 @@ import java.util.ArrayList;
 public class Player implements Serializable {
 	private String name;
 	private ArrayList<Card> cardsInHand = new ArrayList<Card>();
-	public Player(String n, ArrayList<Card> c)
+	public Player(String n)
 	{
 		name = n;
-		cardsInHand = c;
 	}
 	public String name(){
 		return name;
+	}
+	public void setCardsInHand(ArrayList<Card> c){
+		cardsInHand = c;
 	}
 	public ArrayList<Card> getCardsInHand(){
 		return cardsInHand;

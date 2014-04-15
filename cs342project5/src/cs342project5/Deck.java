@@ -41,12 +41,17 @@ public class Deck implements Serializable{
 	{
 		deck.remove(c);
 	}
-	public ArrayList<Card> deal()
+	public ArrayList<Card> deal(int howMany)
 	{
 		ArrayList<Card> deal = new ArrayList<Card>();
-		for(int i=0; i<4; i++)
+		if(howMany > deck.size())
 		{
-			deal.add(deck.get(deck.size()));
+			return null;
+		}
+		for(int i=0; i<howMany; i++)
+		{
+			deal.add(deck.get(i));
+			deck.remove(deck.get(i));
 		}
 		return deal;
 	}

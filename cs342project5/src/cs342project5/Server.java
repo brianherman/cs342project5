@@ -1,20 +1,21 @@
 package cs342project5;
 
 import java.net.*;
-import java.util.ArrayList;
+import java.util.Vector;
 import java.io.*;
 
 import javax.swing.*;
 
 public class Server extends JFrame implements ServerThreadIterface{
-	private static ArrayList<ServerThread> threads = new ArrayList<ServerThread>();
+	private static Vector<ServerThread> threads = new Vector<ServerThread>();
 	private JList log;
 	private DefaultListModel logModel;
-	private ArrayList<Game> games = new ArrayList<Game>();
+	private Vector<Game> games = new Vector<Game>();
 	/**
 	 * GUI for the server.
 	 */
 	public Server(){
+		super("Server");
 		logModel = new DefaultListModel();
 		log = new JList(logModel);
 		log.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
@@ -67,9 +68,9 @@ public class Server extends JFrame implements ServerThreadIterface{
 	 * Returns a list of users retrieved from the thread Arraylist.
 	 * @see cs342project4.ServerThreadIterface#getUsers()
 	 */
-	public ArrayList<String> getUsers()
+	public Vector<String> getUsers()
 	{
-		ArrayList<String> users = new ArrayList<String>();
+		Vector<String> users = new Vector<String>();
 		
 		for(ServerThread st : threads)
 			users.add(st.name());
@@ -127,7 +128,7 @@ public class Server extends JFrame implements ServerThreadIterface{
 		logModel.addElement(l);
 	}
 	@Override
-	public ArrayList<Game> getGame() {
+	public Vector<Game> getGame() {
 		return games;
 	}
 	@Override

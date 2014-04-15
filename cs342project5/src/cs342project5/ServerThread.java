@@ -5,9 +5,9 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.util.ArrayList;
+import java.util.Vector;
 /**
- * Handles a request from a client/
+ * Handles a request from a client.
  * @author brianherman
  *
  */
@@ -47,7 +47,6 @@ public class ServerThread implements Runnable {
 					if(m.sender() != null && m.message().equals("Initial Connection."))
 					{	
 						name = m.sender();
-
 						callback.send(new Envelope("Server","Join.",callback.getUsers()));
 					}
 					else if(m.sender() != null && m.message().equals("Leave."))
@@ -55,31 +54,35 @@ public class ServerThread implements Runnable {
 						callback.send(new Envelope(name,"Leave.",callback.getUsers()));
 						close();
 						return;
-					}
+					}else
 					if(m.sender() != null && m.message().equals("Announce.")){
 						Game game2Add = new Game(callback.getGame().size());
 						game2Add.addPlayer(name);
 						m = new Envelope("Server", "Announce. "+ callback.getGame().size() , callback.getUsers());
-						callback.addGame(g);
-					}
-					if(m.sender() != null && m.message().startsWith("Join.")){
-						String getNumber[] = m.message().split(" ");
-						ArrayList<Game> games = callback.getGame();
-						for(Game ga : games)
-							if( ga.id()==Integer.parseInt(getNumber[1]))
-								m = new Envelope("Server", "Successful Join. " + getNumber[1],callback.getUsers());
 						
+						callback.send(m);
+						callback.addGame(game2Add);
+						send(game2Add);
+					}else
+					if(m.sender() != null && m.message().startsWith("JoinGame.")){
+						String getNumber[] = m.message().split(" ");
+						//callback.log(getNumber[1]);
+						Vector<Game> games = callback.getGame();
+						callback.log(" " + games.size());
+						for(Game ga : games){
+							if(ga != null)
+								if( ga.id()==Integer.parseInt(getNumber[1]))
+								{
+									ga.addPlayer(name);
+									m = new Envelope("Server", "Successful Join. " + getNumber[1],callback.getUsers());
+									callback.send(ga);
+									callback.send(m);
+								}
+						}
 					}
 				}
 				
-				/**
-				 * If it isn't a special command send it to the other clients.
-				 */
-				if(m == null){
-					callback.send(g);
-				}else{
-					callback.send(m);
-				}
+				
 			}
 
 		} catch (IOException e) {

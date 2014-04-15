@@ -2,19 +2,19 @@ package cs342project5;
 
 
 import java.io.Serializable;
-import java.util.ArrayList;
+import java.util.Vector;
 
 public class Envelope implements Serializable{
 	private String message;
 	private String sender;
-	private ArrayList<String> Recipiants = new ArrayList<String>();
+	private Vector<String> Recipiants = new Vector<String>();
 	/**
 	 * Constructor for envelope.
 	 * @param s, sender
 	 * @param m, message
 	 * @param r, recipiants.
 	 */
-	public Envelope(String s, String m, ArrayList<String> r)
+	public Envelope(String s, String m, Vector<String> r)
 	{
 		sender = s;
 		message = m;
@@ -40,7 +40,7 @@ public class Envelope implements Serializable{
 	 * Retruns the arraylist of recipiants.
 	 * @return
 	 */
-	public ArrayList<String> recipiants()
+	public Vector<String> recipiants()
 	{
 		return Recipiants;
 	}
