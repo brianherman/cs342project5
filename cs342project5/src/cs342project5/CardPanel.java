@@ -56,13 +56,36 @@ public class CardPanel extends JPanel {
 			g.drawRect(r.x, r.y, r.width, r.height);
 		}
 	}
+	public ArrayList<Card> getSelectedCards(){
+		ArrayList<Card> sel = new ArrayList<Card>();
+		
+		for(Rectangle r: selection)
+		{
+			int i=0;
+			for(Rectangle e : rectangles)
+			{
+				if(r.equals(e))
+				{
+					sel.add(display.get(i));
+				}
+				i++;
+			}
+			
+		}
+		return sel;
+	}
 	private class PanelMouseListener implements MouseListener{
 
 		@Override
 		public void mouseClicked(MouseEvent e) {
 			for(Rectangle r : rectangles){
-				if(r.contains(e.getX(), e.getY()))
-					selection.add(r);
+				if(r.contains(e.getX(), e.getY())){
+					if(selection.contains(r)){
+						selection.remove(r);
+					}else{	
+						selection.add(r);
+					}
+				}
 			}
 			repaint();
 		}

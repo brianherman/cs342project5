@@ -13,12 +13,17 @@ public class GameFrame extends JFrame {
 	private DefaultListModel playersModel;
 	private CardPanel playerDisplay;
 	private CardPanel display;
+	private CardPanel discard;
+	private JButton PickupFromDiscard, PickupFromDeck, PlaceCards;
 	private ListSelectionModel listSelectionModel;
 	public GameFrame(){
 		super("Game");
 		setLayout(new BorderLayout());
 		playersModel = new DefaultListModel();
-
+		PickupFromDiscard = new JButton("Pickup From Discard");
+		PickupFromDeck = new JButton("Pickup From Deck");
+		PlaceCards = new JButton("Place Cards");
+		
 		players = new JList(playersModel);
 
 		players.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
@@ -46,9 +51,20 @@ public class GameFrame extends JFrame {
 		System.out.println(d.deal(10));
 		display = new CardPanel(d.deal(10));
 		display.setPreferredSize(new Dimension(128,128));
+		discard = new CardPanel(d.deal(5));
+		JPanel center = new JPanel();
+		center.setLayout(new BorderLayout());
+		discard.setPreferredSize(new Dimension(128, 128));
+		center.add(discard, BorderLayout.NORTH);
+		center.add(PickupFromDiscard,BorderLayout.WEST);
+
+		center.add(PickupFromDeck,BorderLayout.CENTER);
 		
+		center.add(PlaceCards, BorderLayout.EAST);
+		
+		add(center);
 		add(display, BorderLayout.SOUTH );
-		setSize(1024,480);
+		setSize(880,480);
 		setVisible(true);
 	}
 	private class ListGameFrameListener implements ListSelectionListener{
