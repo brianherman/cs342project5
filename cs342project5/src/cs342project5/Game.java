@@ -5,18 +5,18 @@ import java.util.ArrayList;
 
 public class Game implements Serializable{
 	private int id;
-	private Deck discard;
-	private Deck active;
+	private GameDeck discard;
+	private GameDeck active;
 	private ArrayList<Player> Players;
 	private final int[] HowManyToDeal = { 10, 10, 7, 7 ,6, 6};
 	public Game(int i){
-		active = new Deck();
+		active = new GameDeck();
 		active.generateDeck();
-		discard = new Deck();
+		discard = new GameDeck();
 		Players = new ArrayList<Player>();
 		id=i;
 	}
-	public Deck discard(){
+	public GameDeck discard(){
 		return discard;
 	}
 	public void addPlayer(String name){

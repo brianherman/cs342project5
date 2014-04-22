@@ -10,7 +10,7 @@ public class Server extends JFrame implements ServerThreadIterface{
 	private static Vector<ServerThread> threads = new Vector<ServerThread>();
 	private JList log;
 	private DefaultListModel logModel;
-	private Vector<Game> games = new Vector<Game>();
+	private Vector<GameFrame> games = new Vector<GameFrame>();
 	/**
 	 * GUI for the server.
 	 */
@@ -128,11 +128,11 @@ public class Server extends JFrame implements ServerThreadIterface{
 		logModel.addElement(l);
 	}
 	@Override
-	public Vector<Game> getGame() {
+	public Vector<GameFrame> getGame() {
 		return games;
 	}
 	@Override
-	public void addGame(Game g) {
+	public void addGame(GameFrame g) {
 		games.add(g);
 	}
 	

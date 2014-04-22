@@ -32,13 +32,13 @@ public class ServerThread implements Runnable {
 
 			while(true){
 				Envelope m = null;
-				Game g = null;
+				GameFrame g = null;
 				//read in a evenlope.
 				Object o = in.readObject();
 				if(o instanceof Envelope){
 					m = (Envelope)o;
-				}else if(o instanceof Game){
-					g = (Game)o;
+				}else if(o instanceof GameFrame){
+					g = (GameFrame)o;
 				}
 				/*
 				 * Special commands.
@@ -56,7 +56,7 @@ public class ServerThread implements Runnable {
 						return;
 					}else
 					if(m.sender() != null && m.message().equals("Announce.")){
-						Game game2Add = new Game(callback.getGame().size());
+						GameFrame game2Add = new GameFrame(callback.getGame().size());
 						game2Add.addPlayer(name);
 						m = new Envelope("Server", "Announce. "+ callback.getGame().size() , callback.getUsers());
 						
@@ -67,9 +67,9 @@ public class ServerThread implements Runnable {
 					if(m.sender() != null && m.message().startsWith("JoinGame.")){
 						String getNumber[] = m.message().split(" ");
 						//callback.log(getNumber[1]);
-						Vector<Game> games = callback.getGame();
+						Vector<GameFrame> games = callback.getGame();
 						callback.log(" " + games.size());
-						for(Game ga : games){
+						for(GameFrame ga : games){
 							if(ga != null)
 								if( ga.id()==Integer.parseInt(getNumber[1]))
 								{
@@ -123,7 +123,7 @@ public class ServerThread implements Runnable {
 			e.printStackTrace();
 		}
 	}
-	public void send(Game g) {
+	public void send(GameFrame g) {
 		try {
 			callback.log("New Gamestate Sent to game " + g.id());
 			out.writeObject(g);

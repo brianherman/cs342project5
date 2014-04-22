@@ -27,7 +27,7 @@ public class Client extends JFrame{
 	private JMenu gameMenu;
 	private JMenuItem joinGame;
 	private JMenuItem newGame;
-	private Game game;
+	private GameFrame game;
 	private String name;
 	
 	public Client(){
@@ -235,7 +235,7 @@ public class Client extends JFrame{
 			ex.printStackTrace();
 		}
 	}
-	public void send(Game g){
+	public void send(GameFrame g){
 		try {
 			out.writeObject(g);
 			out.flush();
@@ -263,7 +263,7 @@ public class Client extends JFrame{
 			e.printStackTrace();
 		}
 	}
-	public synchronized void updateGame(Game g)
+	public synchronized void updateGame(GameFrame g)
 	{
 		game = g;
 	}
@@ -276,7 +276,7 @@ public class Client extends JFrame{
 		@Override
 		public void run() {
 			Envelope e = null;
-			Game g = null;
+			GameFrame g = null;
 			try {
 				Object o = null;
 				/*
@@ -301,8 +301,8 @@ public class Client extends JFrame{
 						}
 						//Print out the message.
 						chat.setText(chat.getText() + e.sender() + ": "+ e.message() +"\n");
-					}else if(o instanceof Game){
-						g = (Game) g;
+					}else if(o instanceof GameFrame){
+						g = (GameFrame) g;
 						updateGame(g);
 					}
 				}
