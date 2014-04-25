@@ -57,7 +57,7 @@ public class Client extends JFrame{
 		file = new JMenu("File");
 		connect = new JMenuItem("Connect");
 
-		start = new JMenuItem("start");
+		startGame = new JMenuItem("start");
 
 		leave = new JMenuItem("Leave");
 		quit = new JMenuItem("Quit");
@@ -125,7 +125,7 @@ public class Client extends JFrame{
 			}
 			if(startGame == e.getSource())
 			{
-				startGame();
+				//startGame();
 			}
 			if(joinGame == e.getSource()){
 				String s = (String)JOptionPane.showInputDialog(
@@ -146,7 +146,7 @@ public class Client extends JFrame{
 					recipiants.add("Server");
 					send(new Envelope(name, "JoinGame. "+ s  , recipiants));
 				}
-				joinGame(Integer.parseInt(s));
+				//joinGame(Integer.parseInt(s));
 			}
 			/*
 			 * If the user pressed enter in the message text box.
@@ -184,18 +184,7 @@ public class Client extends JFrame{
 		}
 
 	}
-	public void startGame(){
-		rummy = new rummy.Game();
-		rummy.startGame();
-	}
-	public void joinGame(int i){
-		rummy = new rummy.Game();
-		
-		for(Player player : game.getPlayers()){
-			player.getRummyPlayer().arrayOfLaidDownSets;
-		}
-		rummy.joinGame();
-	}
+
 	/**
 	 * Connects to the server.
 	 */

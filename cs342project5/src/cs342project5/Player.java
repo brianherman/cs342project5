@@ -5,7 +5,7 @@ import java.util.ArrayList;
 
 public class Player implements Serializable {
 	private String name;
-	private rummy.Player player;
+	private Game game; 
 	public Player(String n)
 	{
 		name = n;
@@ -13,10 +13,10 @@ public class Player implements Serializable {
 	public String name(){
 		return name;
 	}
-	public void setRummyPlayer(rummy.Player c){
-		player = c;
+	public void setGame(Game c){
+		game = c;
 	}
-	public rummy.Player getRummyPlayer(){
-		return player;
+	public Game getGame(){
+		return game;
 	}
 }
