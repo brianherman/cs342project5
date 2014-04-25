@@ -57,7 +57,7 @@ public class ServerThread implements Runnable {
 					}else
 					if(m.sender() != null && m.message().equals("Announce.")){
 						Game game2Add = new Game(callback.getGame().size());
-						game2Add.addPlayer(name);
+						game2Add.addPlayer(new Player(name));
 						m = new Envelope("Server", "Announce. "+ callback.getGame().size() , callback.getUsers());
 						
 						callback.send(m);
@@ -73,7 +73,7 @@ public class ServerThread implements Runnable {
 							if(ga != null)
 								if( ga.id()==Integer.parseInt(getNumber[1]))
 								{
-									ga.addPlayer(name);
+									ga.addPlayer(new Player(name));
 									m = new Envelope("Server", "Successful Join. " + getNumber[1],callback.getUsers());
 									callback.send(ga);
 									callback.send(m);

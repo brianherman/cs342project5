@@ -2,6 +2,7 @@ package cs342project5;
 
 
 import java.net.*;
+import rummy.*;
 import java.util.ArrayList;
 import java.util.Vector;
 import java.awt.*;
@@ -23,11 +24,15 @@ public class Client extends JFrame{
 	private JMenu file;
 	private JMenuItem connect;
 	private JMenuItem quit;
+	private JMenuItem startGame;
+
 	private JMenuItem leave;
 	private JMenu gameMenu;
 	private JMenuItem joinGame;
 	private JMenuItem newGame;
 	private Game game;
+	private rummy.Game rummy;
+
 	private String name;
 	
 	public Client(){
@@ -51,13 +56,16 @@ public class Client extends JFrame{
 		menuBar = new JMenuBar();
 		file = new JMenu("File");
 		connect = new JMenuItem("Connect");
-		
+
+		start = new JMenuItem("start");
+
 		leave = new JMenuItem("Leave");
 		quit = new JMenuItem("Quit");
 		gameMenu = new JMenu("Game");
 		joinGame = new JMenuItem("Join Game");
 		newGame = new JMenuItem("New Game");
 		
+		startGame.addActionListener(CAL);
 		leave.addActionListener(CAL);
 		connect.addActionListener(CAL);
 		quit.addActionListener(CAL);
@@ -69,6 +77,7 @@ public class Client extends JFrame{
 		file.add(quit);
 
 		gameMenu.add(newGame);
+		gameMenu.add(startGame);
 		gameMenu.add(joinGame);
 
 		
@@ -112,8 +121,12 @@ public class Client extends JFrame{
 				Vector<String> recipiants = new Vector<String>();
 				recipiants.add("Server");
 				send(new Envelope(name, "Announce.", recipiants));
+				
 			}
-
+			if(startGame == e.getSource())
+			{
+				startGame();
+			}
 			if(joinGame == e.getSource()){
 				String s = (String)JOptionPane.showInputDialog(
 				                    null,
@@ -133,6 +146,7 @@ public class Client extends JFrame{
 					recipiants.add("Server");
 					send(new Envelope(name, "JoinGame. "+ s  , recipiants));
 				}
+				joinGame(Integer.parseInt(s));
 			}
 			/*
 			 * If the user pressed enter in the message text box.
@@ -169,6 +183,18 @@ public class Client extends JFrame{
 			}
 		}
 
+	}
+	public void startGame(){
+		rummy = new rummy.Game();
+		rummy.startGame();
+	}
+	public void joinGame(int i){
+		rummy = new rummy.Game();
+		
+		for(Player player : game.getPlayers()){
+			player.getRummyPlayer().arrayOfLaidDownSets;
+		}
+		rummy.joinGame();
 	}
 	/**
 	 * Connects to the server.
