@@ -3,6 +3,8 @@ package cs342project5;
 import java.io.Serializable;
 import java.util.ArrayList;
 
+import rummy.LaidDownSetsOfCards;
+
 public class Game implements Serializable{
 	private int id;
 	private ArrayList<Player> Players;

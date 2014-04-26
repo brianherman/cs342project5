@@ -77,6 +77,7 @@ public class ServerThread implements Runnable {
 									ga.addPlayer(new Player(name));
 									m = new Envelope("Server", "Successful Join. " + getNumber[1],callback.getUsers());
 									callback.send(ga);
+
 									callback.send(m);
 								}
 						}

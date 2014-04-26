@@ -3,7 +3,6 @@ package cs342project5;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-
 public class Switcher {
 	/*
 	 * Switches between server and client.
@@ -21,6 +20,8 @@ public class Switcher {
 			c.connect();
 			c.listen();
 			c.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+			rummy.Game g = new rummy.Game(c);
+			c.setGame(g);
 		}
 	}
 }

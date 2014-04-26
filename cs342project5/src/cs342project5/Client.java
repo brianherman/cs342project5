@@ -94,6 +94,9 @@ public class Client extends JFrame{
 		addWindowListener(new ClientWindowListener());
 		setVisible(true);
 	}
+	public void setGame(rummy.Game g){
+		rummy = g;
+	}
 	/**
 	 * Listens for events made by the user.
 	 * @author brianherman
@@ -125,7 +128,7 @@ public class Client extends JFrame{
 			}
 			if(startGame == e.getSource())
 			{
-				//startGame();
+				rummy.startGame();
 			}
 			if(joinGame == e.getSource()){
 				String s = (String)JOptionPane.showInputDialog(
@@ -146,7 +149,7 @@ public class Client extends JFrame{
 					recipiants.add("Server");
 					send(new Envelope(name, "JoinGame. "+ s  , recipiants));
 				}
-				//joinGame(Integer.parseInt(s));
+				rummy.joinGame();
 			}
 			/*
 			 * If the user pressed enter in the message text box.

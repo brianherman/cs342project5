@@ -2,6 +2,8 @@ package rummy;
 
 import javax.swing.*;
 
+import cs342project5.Client;
+
 import java.util.ArrayList;
 
 /**
@@ -21,22 +23,41 @@ public class Game implements java.io.Serializable
     public static Player player4;
     static int playerTurn=1;
     static int numPlayers = 1;
-    private static cs342project5.Game rummy;
-    public void joinGame(cs342project5.Game g)
-    {
-    	rummy=g;
+    private static Client rummy;
+    public Game(cs342project5.Client g){
+    	rummy = g;
     }
-    public void startGame(cs342project5.Game g)
+    public void joinGame()
     {
-        rummy=g;
+    	
+    }
+    /*
+     * stage1
+     * update deck and the discard pile depending which it gets drawn from
+     * stage2
+     * drop your cards
+     * update tableview
+     * stage3
+     * update discard pile
+     * if the deck is 0 update deck
+     */
+    public void startGame()
+    {
+    	// create an shuffle the deck
 
         // create an shuffle the deck
-        
+        deck = new Deck();
+        deck.printDeck();
+        discardPile = new DiscardPile();
+        addFirstCardToDiscardPile(); // done once per game, unless we run out of cards
+        deck.printDeck(); // just to make sure that one was taken off the top
+
+
         // deal the cards
         declarePlayers();
         dealTheCards();
         sortHandsSmallToLarge();
-        displayHandASCII();
+//        displayHandASCII();
 
         
         // update the GUI
@@ -53,12 +74,13 @@ public class Game implements java.io.Serializable
        
         //starts player 1s turn, he will start player 2s turn and so on
         player1.playerTurn();
+        cs342project5.GameState g = new cs342project5.GameState();
         
-  
+
 
     }
 
-    private static void endGame()
+    public static void endGame()
     {
         System.out.println("Can't figure out why it won't let me show a window!!!!");
         System.out.println("The game is over, I just wanna show it!");
@@ -220,4 +242,14 @@ public class Game implements java.io.Serializable
             endGame();
         }
     }
+    /**
+     * When you deal the cards, you take one and turn it over -- this is the first card in the discard pile.
+     */
+    private static void addFirstCardToDiscardPile()
+    {
+        Card card = deck.drawCardFromDeck();
+        discardPile.putCardOnDiscardPile(card);
+    }
+
+
 }

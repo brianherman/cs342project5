@@ -53,19 +53,9 @@ public class Player extends JFrame implements ActionListener {
 	boolean inStageTwo = true;
 	boolean inStateThree = true;
 	public DiscardPile discardPile;
-	private cs342project5.Game rummy;
+	private cs342project5.Client rummy;
 	
-	public int getStage(){
-		if(inStageOne)
-			return 1;
-		if(inStageTwo)
-			return 2;
-		if(inStateThree)
-			return 3;
-		
-		return 0;
-	}
-	public Player(cs342project5.Game r) {
+	public Player(Client r) {
 		rummy=r;
 		// add the tabs to the tabbedPane
 		tabbedPane.add("Deck and Discard", deckView);
@@ -276,7 +266,9 @@ public class Player extends JFrame implements ActionListener {
 
 	private void stage1() {
 		// a while loop that takes us through the first stage in the game
-
+		if(Game.deck.getSize()==0){
+			Game.deck.setDeck(Game.discardPile.getDiscardDeck());
+		}
 		tabbedPane.setSelectedIndex(0);
 		showStageOneMessage();
 		/*
@@ -911,7 +903,9 @@ public class Player extends JFrame implements ActionListener {
 				inStageOne = true;
 			}
 		});
-
+		if(hand.size()==0){
+			Game.endGame();
+		}
 	}
 
 	public void stage3RemoveActionListeners() {

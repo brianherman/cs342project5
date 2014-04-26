@@ -50,7 +50,10 @@ public class Deck implements java.io.Serializable
         // then we shuffle the deck -- made easy by Java!
         Collections.shuffle(deck);
     }
-
+    public void setDeck(ArrayList<Card> d)
+    {
+    	deck=d;
+    }
     /**
      * This function takes a card from the top of the deck and returns it where
      * it needs to go -- the the player's hand.
@@ -62,7 +65,9 @@ public class Deck implements java.io.Serializable
         deck.remove(0);              // remove it from the deck
         return tempCard;             // give the card to the player
     }
-
+    public int getSize(){
+    	return deck.size();
+    }
     /**
      * For use in debugging, this method displays what's in the deck
      */
