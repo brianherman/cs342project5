@@ -17,7 +17,7 @@ public class ServerThread implements Runnable {
 	private ObjectInputStream in = null;
 	private ServerThreadIterface callback = null;
 	private String name = null;
-
+	private int id;
 	public ServerThread(Socket s, ServerThreadIterface stc)
 	{
 		socket = s;
@@ -33,12 +33,17 @@ public class ServerThread implements Runnable {
 			while(true){
 				Envelope m = null;
 				Game g = null;
+				GameState gs = null;
 				//read in a evenlope.
 				Object o = in.readObject();
 				if(o instanceof Envelope){
 					m = (Envelope)o;
 				}else if(o instanceof Game){
 					g = (Game)o;
+				}else if(o instanceof GameState)
+				{
+					gs = (GameState)o;
+					callback.send(gs);
 				}
 				/*
 				 * Special commands.
@@ -74,17 +79,19 @@ public class ServerThread implements Runnable {
 							if(ga != null)
 								if( ga.id()==Integer.parseInt(getNumber[1]))
 								{
+									id=Integer.parseInt(getNumber[1]);
 									ga.addPlayer(new Player(name));
 									m = new Envelope("Server", "Successful Join. " + getNumber[1],callback.getUsers());
 									callback.send(ga);
-
 									callback.send(m);
 								}
 						}
 					}
+					}else{
+						if(m != null)
+							callback.send(m);
 				}
-				
-				
+			
 			}
 
 		} catch (IOException e) {
@@ -112,6 +119,16 @@ public class ServerThread implements Runnable {
 			e.printStackTrace();
 		}
 	}
+	public void send(GameState gs) 
+	{
+		try {
+			callback.log("NEW GAMESTATE SENT");
+			out.writeObject(gs);
+			out.flush();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 	/**
 	 * Allows the server to close this connection.
 	 */
@@ -133,5 +150,9 @@ public class ServerThread implements Runnable {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}		
+	}
+	public int getid() {
+		// TODO Auto-generated method stub
+		return id;
 	}
 }

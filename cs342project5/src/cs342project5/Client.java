@@ -91,8 +91,10 @@ public class Client extends JFrame{
 		add(message, BorderLayout.SOUTH);
 
 		setSize(640,480);
-		addWindowListener(new ClientWindowListener());
 		setVisible(true);
+	}
+	public int getId(){
+		return game.id();
 	}
 	public void setGame(rummy.Game g){
 		rummy = g;
@@ -281,6 +283,9 @@ public class Client extends JFrame{
 			e.printStackTrace();
 		}
 	}
+	public void send(GameState gs) {
+		rummy.update(gs);
+	}
 	public synchronized void updateGame(Game g)
 	{
 		game = g;
@@ -295,6 +300,7 @@ public class Client extends JFrame{
 		public void run() {
 			Envelope e = null;
 			Game g = null;
+			GameState gs = null;
 			try {
 				Object o = null;
 				/*
@@ -322,6 +328,9 @@ public class Client extends JFrame{
 					}else if(o instanceof Game){
 						g = (Game) g;
 						updateGame(g);
+					}else if(o instanceof GameState){
+						gs = (GameState)o;
+						rummy.update(gs);
 					}
 				}
 			} catch (IOException ex) {
@@ -332,43 +341,6 @@ public class Client extends JFrame{
 		}
 
 	}
-	private class ClientWindowListener implements WindowListener{
 
-		@Override
-		public void windowActivated(WindowEvent arg0) {
-			
-		}
-
-		@Override
-		public void windowClosed(WindowEvent arg0) {
-			
-		}
-
-		@Override
-		public void windowClosing(WindowEvent arg0) {
-			leave();
-			close();
-		}
-
-		@Override
-		public void windowDeactivated(WindowEvent arg0) {
-			
-		}
-
-		@Override
-		public void windowDeiconified(WindowEvent arg0) {
-			
-		}
-
-		@Override
-		public void windowIconified(WindowEvent arg0) {
-			
-		}
-
-		@Override
-		public void windowOpened(WindowEvent arg0) {
-			
-		}
-		
-	}
+	
 }

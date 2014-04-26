@@ -3,6 +3,7 @@ package rummy;
 import javax.swing.*;
 
 import cs342project5.Client;
+import cs342project5.GameState;
 
 import java.util.ArrayList;
 
@@ -27,6 +28,11 @@ public class Game implements java.io.Serializable
     public Game(cs342project5.Client g){
     	rummy = g;
     }
+    public void update(GameState gs){
+    	player1.arrayOfLaidDownSets = gs.getArrayOfLaidDownSets();
+    	discardPile = gs.getDiscardPile();
+    	deck = gs.getDeck();
+    }
     public void joinGame()
     {
     	
@@ -42,15 +48,13 @@ public class Game implements java.io.Serializable
      * if the deck is 0 update deck
      */
     public void startGame()
-    {
-    	// create an shuffle the deck
-
+    {    	
         // create an shuffle the deck
         deck = new Deck();
         deck.printDeck();
         discardPile = new DiscardPile();
         addFirstCardToDiscardPile(); // done once per game, unless we run out of cards
-        deck.printDeck(); // just to make sure that one was taken off the top
+      //  deck.printDeck(); // just to make sure that one was taken off the top
 
 
         // deal the cards
@@ -64,7 +68,7 @@ public class Game implements java.io.Serializable
         for (int i = 0; i < numPlayers; i++)
         {
             // we're gonna need to send some variables along with the methods. The discard and the table
-            Card discard = player1.discardPile.getCurrentDiscardCard();
+            Card discard = discardPile.getCurrentDiscardCard();
             if      (0 == i) player1.populateGui(discard);
             else if (1 == i) player2.populateGui(discard);
             else if (2 == i) player3.populateGui(discard);
@@ -73,10 +77,7 @@ public class Game implements java.io.Serializable
 
        
         //starts player 1s turn, he will start player 2s turn and so on
-        player1.playerTurn();
-        cs342project5.GameState g = new cs342project5.GameState();
-        
-
+        player1.playerTurn();       
 
     }
 
@@ -220,21 +221,29 @@ public class Game implements java.io.Serializable
     	if (playerTurn == 1)
         {
             player1.playerTurn();
+            cs342project5.GameState gs = new cs342project5.GameState(rummy.getId(), Game.deck, Game.discardPile, player1.arrayOfLaidDownSets);
+			rummy.send(gs);
             gameOver = player1.checkForEndOfGame();
         }
         else if (playerTurn == 2)
         {
             player2.playerTurn();
+            cs342project5.GameState gs = new cs342project5.GameState(rummy.getId(), Game.deck, Game.discardPile, player2.arrayOfLaidDownSets);
+         			rummy.send(gs);
             gameOver = player2.checkForEndOfGame();
         }
         else if (playerTurn == 3)
         {
             player3.playerTurn();
+            cs342project5.GameState gs = new cs342project5.GameState(rummy.getId(), Game.deck, Game.discardPile, player3.arrayOfLaidDownSets);
+         			rummy.send(gs);
             gameOver = player3.checkForEndOfGame();
         }
         else
         {
             player4.playerTurn();
+            cs342project5.GameState gs = new cs342project5.GameState(rummy.getId(), Game.deck, Game.discardPile, player4.arrayOfLaidDownSets);
+         			rummy.send(gs);
             gameOver = player4.checkForEndOfGame();
         }
         if (gameOver)

@@ -263,7 +263,16 @@ public class Player extends JFrame implements ActionListener {
 		// we do stage 1 (which will call stage2 (which will call stage3)))
 		stage1();
 	}
-
+	 /*
+     * stage1
+     * update deck and the discard pile depending which it gets drawn from
+     * stage2
+     * drop your cards
+     * update tableview
+     * stage3
+     * update discard pile
+     * if the deck is 0 update deck
+     */
 	private void stage1() {
 		// a while loop that takes us through the first stage in the game
 		if(Game.deck.getSize()==0){
@@ -292,6 +301,9 @@ public class Player extends JFrame implements ActionListener {
 					discardPileButton.removeActionListener(act);
 				for (ActionListener act : deckButton.getActionListeners())
 					deckButton.removeActionListener(act);
+
+				cs342project5.GameState gs = new cs342project5.GameState(rummy.getId(), Game.deck, Game.discardPile, arrayOfLaidDownSets);
+				rummy.send(gs);
 				stage2();
 			}
 		});
@@ -320,11 +332,13 @@ public class Player extends JFrame implements ActionListener {
 					discardPileButton.removeActionListener(act);
 				for (ActionListener act : deckButton.getActionListeners())
 					deckButton.removeActionListener(act);
-
+				cs342project5.GameState gs = new cs342project5.GameState(rummy.getId(), Game.deck, Game.discardPile, arrayOfLaidDownSets);
+				rummy.send(gs);
 				// call for stage2
 				stage2();
 			}
 		});
+		
 		inStageOne = false;
 		
 	}// END WHILE LOOP
@@ -345,6 +359,8 @@ public class Player extends JFrame implements ActionListener {
 		// if the user chooses to not lay down any cards, we move on to stage
 		// three
 		if (discardString.equals("0")) {
+			cs342project5.GameState gs = new cs342project5.GameState(rummy.getId(), Game.deck, Game.discardPile, arrayOfLaidDownSets);
+			rummy.send(gs);
 			stage3();
 		}
 
@@ -355,6 +371,9 @@ public class Player extends JFrame implements ActionListener {
 				makeNewSet(discardString, isNewSet);
 			else
 				addToExistingSet(discardString, isNewSet);
+			
+			cs342project5.GameState gs = new cs342project5.GameState(rummy.getId(), Game.deck, Game.discardPile, arrayOfLaidDownSets);
+			rummy.send(gs);
 			stage3();
 		}
 		

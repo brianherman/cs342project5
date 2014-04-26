@@ -78,6 +78,15 @@ public class Server extends JFrame implements ServerThreadIterface{
 		return users;
 	}
 	@Override
+	public void send(GameState g) {
+		for(ServerThread s: threads)
+		{
+				if(s.getid()==g.getId()){
+					s.send(g);
+				}
+		}	
+	}
+	@Override
 	public void send(Game g) {
 		for(ServerThread s: threads)
 		{

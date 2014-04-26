@@ -28,7 +28,6 @@ public class DiscardPile implements java.io.Serializable
         discardDeck.add(card);
     }
 
-
     /**
      * This function draws a card from the deck
      * @return Card

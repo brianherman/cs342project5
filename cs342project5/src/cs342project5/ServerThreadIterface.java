@@ -10,6 +10,7 @@ import java.util.Vector;
 public interface ServerThreadIterface {
 	public void send(Envelope m);
 	public void send(Game g);
+	public void send(GameState g);
 	public Vector<String> getUsers();
 	public Vector<Game> getGame();
 	public void addGame(Game g);
