@@ -302,7 +302,7 @@ public class Player extends JFrame implements ActionListener {
 				for (ActionListener act : deckButton.getActionListeners())
 					deckButton.removeActionListener(act);
 
-				cs342project5.GameState gs = new cs342project5.GameState(rummy.getId(), Game.deck, Game.discardPile, arrayOfLaidDownSets);
+				cs342project5.GameState gs = new cs342project5.GameState(rummy.getId(), Game.deck, Game.discardPile, arrayOfLaidDownSets,rummy.getPlayerID());
 				rummy.send(gs);
 				stage2();
 			}
@@ -332,7 +332,7 @@ public class Player extends JFrame implements ActionListener {
 					discardPileButton.removeActionListener(act);
 				for (ActionListener act : deckButton.getActionListeners())
 					deckButton.removeActionListener(act);
-				cs342project5.GameState gs = new cs342project5.GameState(rummy.getId(), Game.deck, Game.discardPile, arrayOfLaidDownSets);
+				cs342project5.GameState gs = new cs342project5.GameState(rummy.getId(), Game.deck, Game.discardPile, arrayOfLaidDownSets,rummy.getPlayerID());
 				rummy.send(gs);
 				// call for stage2
 				stage2();
@@ -359,7 +359,7 @@ public class Player extends JFrame implements ActionListener {
 		// if the user chooses to not lay down any cards, we move on to stage
 		// three
 		if (discardString.equals("0")) {
-			cs342project5.GameState gs = new cs342project5.GameState(rummy.getId(), Game.deck, Game.discardPile, arrayOfLaidDownSets);
+			cs342project5.GameState gs = new cs342project5.GameState(rummy.getId(), Game.deck, Game.discardPile, arrayOfLaidDownSets,rummy.getPlayerID());
 			rummy.send(gs);
 			stage3();
 		}
@@ -372,7 +372,7 @@ public class Player extends JFrame implements ActionListener {
 			else
 				addToExistingSet(discardString, isNewSet);
 			
-			cs342project5.GameState gs = new cs342project5.GameState(rummy.getId(), Game.deck, Game.discardPile, arrayOfLaidDownSets);
+			cs342project5.GameState gs = new cs342project5.GameState(rummy.getId(), Game.deck, Game.discardPile, arrayOfLaidDownSets,rummy.getPlayerID());
 			rummy.send(gs);
 			stage3();
 		}

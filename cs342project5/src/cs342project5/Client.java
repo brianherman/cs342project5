@@ -32,8 +32,9 @@ public class Client extends JFrame{
 	private JMenuItem newGame;
 	private Game game;
 	private rummy.Game rummy;
-
+	private GameState gameState;
 	private String name;
+	private int playerID;
 	
 	public Client(){
 		super("Client");
@@ -151,7 +152,8 @@ public class Client extends JFrame{
 					recipiants.add("Server");
 					send(new Envelope(name, "JoinGame. "+ s  , recipiants));
 				}
-				rummy.joinGame();
+				
+				rummy.joinGame(gameState);
 			}
 			/*
 			 * If the user pressed enter in the message text box.
@@ -285,6 +287,7 @@ public class Client extends JFrame{
 	}
 	public void send(GameState gs) {
 		rummy.update(gs);
+		playerID=gs.whichPlayer();
 	}
 	public synchronized void updateGame(Game g)
 	{
@@ -331,6 +334,7 @@ public class Client extends JFrame{
 					}else if(o instanceof GameState){
 						gs = (GameState)o;
 						rummy.update(gs);
+						gameState = (GameState)o;
 					}
 				}
 			} catch (IOException ex) {
@@ -340,6 +344,10 @@ public class Client extends JFrame{
 			}
 		}
 
+	}
+
+	public int getPlayerID() {
+		return playerID;
 	}
 
 	
