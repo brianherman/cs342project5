@@ -8,21 +8,19 @@ import javax.swing.*;
 
 public class Server extends JFrame implements ServerThreadIterface{
 	private static Vector<ServerThread> threads = new Vector<ServerThread>();
-	private JList log;
-	private DefaultListModel logModel;
+	private JTextArea lta;
 	private Vector<Game> games = new Vector<Game>();
 	/**
 	 * GUI for the server.
 	 */
 	public Server(){
 		super("Server");
-		logModel = new DefaultListModel();
-		log = new JList(logModel);
-		log.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
-		log.setLayoutOrientation(JList.VERTICAL);
-		log.setVisibleRowCount(-1);
+		lta = new JTextArea();
+		JScrollPane textScroller = new JScrollPane(lta);
 
-		add(log);
+		lta.setEditable(false);
+
+		add(textScroller);
 		setSize(800,600);
 		setVisible(true);
 		
@@ -81,9 +79,7 @@ public class Server extends JFrame implements ServerThreadIterface{
 	public void send(GameState g) {
 		for(ServerThread s: threads)
 		{
-				if(s.getid()==g.getId()){
-					s.send(g);
-				}
+			s.send(g);
 		}	
 	}
 	@Override
@@ -134,7 +130,7 @@ public class Server extends JFrame implements ServerThreadIterface{
 	@Override
 	public void log(String l)
 	{
-		logModel.addElement(l);
+		lta.append(l + "\n");
 	}
 	@Override
 	public Vector<Game> getGame() {

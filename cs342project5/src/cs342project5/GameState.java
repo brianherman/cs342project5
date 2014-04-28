@@ -7,7 +7,7 @@ import rummy.DiscardPile;
 import rummy.Game;
 import rummy.LaidDownSetsOfCards;
 
-public class GameState {
+public class GameState implements java.io.Serializable{
 	private rummy.DiscardPile discardPile;
 	private rummy.Deck deck;
 	private ArrayList<rummy.LaidDownSetsOfCards> arrayOfLaidDownSets = new ArrayList<rummy.LaidDownSetsOfCards>();

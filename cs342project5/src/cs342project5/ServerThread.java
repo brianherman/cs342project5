@@ -68,7 +68,8 @@ public class ServerThread implements Runnable {
 						
 						callback.send(m);
 						callback.addGame(game2Add);
-						send(game2Add);
+						callback.send(game2Add);
+						
 					}else
 					if(m.sender() != null && m.message().startsWith("JoinGame.")){
 						String getNumber[] = m.message().split(" ");

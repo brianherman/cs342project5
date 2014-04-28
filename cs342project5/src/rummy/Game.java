@@ -24,9 +24,9 @@ public class Game implements java.io.Serializable
 	public static Player player4;
 	static int playerTurn = 1;
 	static int numPlayers = 1;
-	private static Client rummy;
+	private static Client client;
 	public Game(cs342project5.Client g){
-		rummy = g;
+		client = g;
 	}
 	public void update(GameState gs){
 		player1.arrayOfLaidDownSets = gs.getArrayOfLaidDownSets();
@@ -35,7 +35,7 @@ public class Game implements java.io.Serializable
 	}
 	public void joinGame(GameState gs)
 	{
-		int whichPlayerToUpdate = rummy.getPlayerID();
+		int whichPlayerToUpdate = client.getPlayerID();
 	
 		if(numPlayers > 4)
 			System.exit(-1);
@@ -109,7 +109,8 @@ public class Game implements java.io.Serializable
 			else             player4.populateGui(discard);
 		}
 
-
+		cs342project5.GameState gs2 = new cs342project5.GameState(client.getId(), Game.deck, Game.discardPile, player1.arrayOfLaidDownSets, client.getPlayerID());
+		client.send(gs2);
 		//starts player 1s turn, he will start player 2s turn and so on
 		player1.playerTurn();       
 
@@ -166,31 +167,31 @@ public class Game implements java.io.Serializable
 	{
 		if (1 == numPlayers)
 		{
-			player1 = new Player(rummy);
+			player1 = new Player(client);
 			player1.setPlayerID(1);
 		}
 		else if (2 == numPlayers)
 		{
-			player1 = new Player(rummy);
-			player2 = new Player(rummy);
+			player1 = new Player(client);
+			player2 = new Player(client);
 			player1.setPlayerID(1);
 			player2.setPlayerID(2);
 		}
 		else if (3 == numPlayers)
 		{
-			player1 = new Player(rummy);
-			player2 = new Player(rummy);
-			player3 = new Player(rummy);
+			player1 = new Player(client);
+			player2 = new Player(client);
+			player3 = new Player(client);
 			player1.setPlayerID(1);
 			player2.setPlayerID(2);
 			player3.setPlayerID(3);
 		}
 		else if (4 == numPlayers)
 		{
-			player1 = new Player(rummy);
-			player2 = new Player(rummy);
-			player3 = new Player(rummy);
-			player4 = new Player(rummy);
+			player1 = new Player(client);
+			player2 = new Player(client);
+			player3 = new Player(client);
+			player4 = new Player(client);
 			player1.setPlayerID(1);
 			player2.setPlayerID(2);
 			player3.setPlayerID(3);
@@ -254,30 +255,31 @@ public class Game implements java.io.Serializable
 
 		if (playerTurn == 1)
 		{
+		
 			player1.playerTurn();
-			cs342project5.GameState gs = new cs342project5.GameState(rummy.getId(), Game.deck, Game.discardPile, player1.arrayOfLaidDownSets, rummy.getPlayerID());
-			rummy.send(gs);
+			cs342project5.GameState gs = new cs342project5.GameState(client.getId(), Game.deck, Game.discardPile, player1.arrayOfLaidDownSets, client.getPlayerID());
+			client.send(gs);
 			gameOver = player1.checkForEndOfGame();
 		}
 		else if (playerTurn == 2)
 		{
 			player2.playerTurn();
-			cs342project5.GameState gs = new cs342project5.GameState(rummy.getId(), Game.deck, Game.discardPile, player2.arrayOfLaidDownSets, rummy.getPlayerID());
-			rummy.send(gs);
+			cs342project5.GameState gs = new cs342project5.GameState(client.getId(), Game.deck, Game.discardPile, player2.arrayOfLaidDownSets, client.getPlayerID());
+			client.send(gs);
 			gameOver = player2.checkForEndOfGame();
 		}
 		else if (playerTurn == 3)
 		{
 			player3.playerTurn();
-			cs342project5.GameState gs = new cs342project5.GameState(rummy.getId(), Game.deck, Game.discardPile, player3.arrayOfLaidDownSets, rummy.getPlayerID());
-			rummy.send(gs);
+			cs342project5.GameState gs = new cs342project5.GameState(client.getId(), Game.deck, Game.discardPile, player3.arrayOfLaidDownSets, client.getPlayerID());
+			client.send(gs);
 			gameOver = player3.checkForEndOfGame();
 		}
 		else
 		{
 			player4.playerTurn();
-			cs342project5.GameState gs = new cs342project5.GameState(rummy.getId(), Game.deck, Game.discardPile, player4.arrayOfLaidDownSets, rummy.getPlayerID());
-			rummy.send(gs);
+			cs342project5.GameState gs = new cs342project5.GameState(client.getId(), Game.deck, Game.discardPile, player4.arrayOfLaidDownSets, client.getPlayerID());
+			client.send(gs);
 			gameOver = player4.checkForEndOfGame();
 		}
 		if (gameOver)

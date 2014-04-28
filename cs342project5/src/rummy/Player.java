@@ -53,10 +53,10 @@ public class Player extends JFrame implements ActionListener {
 	boolean inStageTwo = true;
 	boolean inStateThree = true;
 	public DiscardPile discardPile;
-	private cs342project5.Client rummy;
+	private cs342project5.Client client;
 	
 	public Player(Client r) {
-		rummy=r;
+		client=r;
 		// add the tabs to the tabbedPane
 		tabbedPane.add("Deck and Discard", deckView);
 		tabbedPane.add("Your Hand", handView);
@@ -80,7 +80,7 @@ public class Player extends JFrame implements ActionListener {
 		tableView.setLayout(new GridLayout(10, 13));
 
 		// create each button
-		for (int row = 0; row < 10; row++)
+		for (int row = 0; row < 10; row++){
 			for (int col = 0; col < 13; col++) {
 				// instantiate the button
 				button = new TableButton();
@@ -97,6 +97,7 @@ public class Player extends JFrame implements ActionListener {
 				// add it to the panel
 				tableView.add(button);
 			}
+		}
 	}
 
 	private void createHandTab() {
@@ -302,8 +303,7 @@ public class Player extends JFrame implements ActionListener {
 				for (ActionListener act : deckButton.getActionListeners())
 					deckButton.removeActionListener(act);
 
-				cs342project5.GameState gs = new cs342project5.GameState(rummy.getId(), Game.deck, Game.discardPile, arrayOfLaidDownSets,rummy.getPlayerID());
-				rummy.send(gs);
+				
 				stage2();
 			}
 		});
@@ -332,8 +332,7 @@ public class Player extends JFrame implements ActionListener {
 					discardPileButton.removeActionListener(act);
 				for (ActionListener act : deckButton.getActionListeners())
 					deckButton.removeActionListener(act);
-				cs342project5.GameState gs = new cs342project5.GameState(rummy.getId(), Game.deck, Game.discardPile, arrayOfLaidDownSets,rummy.getPlayerID());
-				rummy.send(gs);
+			
 				// call for stage2
 				stage2();
 			}
@@ -359,8 +358,7 @@ public class Player extends JFrame implements ActionListener {
 		// if the user chooses to not lay down any cards, we move on to stage
 		// three
 		if (discardString.equals("0")) {
-			cs342project5.GameState gs = new cs342project5.GameState(rummy.getId(), Game.deck, Game.discardPile, arrayOfLaidDownSets,rummy.getPlayerID());
-			rummy.send(gs);
+	
 			stage3();
 		}
 
@@ -372,8 +370,7 @@ public class Player extends JFrame implements ActionListener {
 			else
 				addToExistingSet(discardString, isNewSet);
 			
-			cs342project5.GameState gs = new cs342project5.GameState(rummy.getId(), Game.deck, Game.discardPile, arrayOfLaidDownSets,rummy.getPlayerID());
-			rummy.send(gs);
+	
 			stage3();
 		}
 		

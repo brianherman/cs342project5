@@ -47,9 +47,11 @@ public class Client extends JFrame{
 		
 		JScrollPane listScroller = new JScrollPane(Users);
 		listScroller.setPreferredSize(new Dimension(80, 80));
-		
 		chat = new JTextArea();
+		JScrollPane textScroller = new JScrollPane(chat);
+
 		chat.setEditable(false);
+
 		message = new JTextField();
 		ClientActionListener CAL = new ClientActionListener();
 		message.addActionListener(CAL);
@@ -87,7 +89,7 @@ public class Client extends JFrame{
 		
 		setJMenuBar(menuBar);
 		
-		add(chat, BorderLayout.CENTER);
+		add(textScroller, BorderLayout.CENTER);
 		add(listScroller,BorderLayout.EAST);
 		add(message, BorderLayout.SOUTH);
 
@@ -127,7 +129,7 @@ public class Client extends JFrame{
 				Vector<String> recipiants = new Vector<String>();
 				recipiants.add("Server");
 				send(new Envelope(name, "Announce.", recipiants));
-				
+				send(game);
 			}
 			if(startGame == e.getSource())
 			{
@@ -289,7 +291,7 @@ public class Client extends JFrame{
 		rummy.update(gs);
 		playerID=gs.whichPlayer();
 	}
-	public synchronized void updateGame(Game g)
+	public void updateGame(Game g)
 	{
 		game = g;
 	}
@@ -303,15 +305,19 @@ public class Client extends JFrame{
 		public void run() {
 			Envelope e = null;
 			Game g = null;
-			GameState gs = null;
 			try {
 				Object o = null;
 				/*
 				 * Loop to check for incoming messages.
 				 */
 				while((o=in.readObject()) != null)
-				{
-					if(o instanceof Envelope){
+				{ 
+				if(o instanceof GameState){
+					gameState = (GameState)o;
+					
+				}else if(o instanceof Game){
+					game = (Game) g;
+				}else if(o instanceof Envelope){
 						e = (Envelope) o;
 						//Special server message that adds to the user list.
 						if(e.sender().equals("Server") && e.message().equals("Join."))
@@ -328,13 +334,6 @@ public class Client extends JFrame{
 						}
 						//Print out the message.
 						chat.setText(chat.getText() + e.sender() + ": "+ e.message() +"\n");
-					}else if(o instanceof Game){
-						g = (Game) g;
-						updateGame(g);
-					}else if(o instanceof GameState){
-						gs = (GameState)o;
-						rummy.update(gs);
-						gameState = (GameState)o;
 					}
 				}
 			} catch (IOException ex) {
@@ -349,6 +348,4 @@ public class Client extends JFrame{
 	public int getPlayerID() {
 		return playerID;
 	}
-
-	
 }
