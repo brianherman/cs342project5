@@ -2,7 +2,6 @@ package cs342project5;
 
 
 import java.net.*;
-import rummy.*;
 import java.util.ArrayList;
 import java.util.Vector;
 import java.awt.*;
@@ -10,6 +9,8 @@ import java.awt.event.*;
 import java.io.*;
 
 import javax.swing.*;
+
+import rummy.Game;
 
 public class Client extends JFrame{
 
@@ -30,7 +31,7 @@ public class Client extends JFrame{
 	private JMenu gameMenu;
 	private JMenuItem joinGame;
 	private JMenuItem newGame;
-	private Game game;
+	private cs342project5.Game game;
 	private rummy.Game rummy;
 	private GameState gameState;
 	private String name;
@@ -100,6 +101,7 @@ public class Client extends JFrame{
 		return game.id();
 	}
 	public void setGame(rummy.Game g){
+		System.out.println("setgame called");
 		rummy = g;
 	}
 	/**
@@ -134,6 +136,10 @@ public class Client extends JFrame{
 			if(startGame == e.getSource())
 			{
 				rummy.startGame();
+				cs342project5.GameState gs = new cs342project5.GameState(getId(), Game.deck, Game.discardPile, Game.player1.arrayOfLaidDownSets, getPlayerID());
+				gameState = gs;
+				send(gameState);
+
 			}
 			if(joinGame == e.getSource()){
 				String s = (String)JOptionPane.showInputDialog(
@@ -259,7 +265,7 @@ public class Client extends JFrame{
 			ex.printStackTrace();
 		}
 	}
-	public void send(Game g){
+	public void send(cs342project5.Game g){
 		try {
 			out.writeObject(g);
 			out.flush();
@@ -288,12 +294,14 @@ public class Client extends JFrame{
 		}
 	}
 	public void send(GameState gs) {
-		rummy.update(gs);
-		playerID=gs.whichPlayer();
-	}
-	public void updateGame(Game g)
-	{
-		game = g;
+		//rummy.update(gs);
+		//playerID=gs.whichPlayer();
+		try {
+			out.writeObject(gs);
+			out.flush();
+		} catch (IOException ex) {
+			ex.printStackTrace();
+		}
 	}
 	/**
 	 * This thread listens for incoming messages.
@@ -314,9 +322,10 @@ public class Client extends JFrame{
 				{ 
 				if(o instanceof GameState){
 					gameState = (GameState)o;
-					
-				}else if(o instanceof Game){
-					game = (Game) g;
+					chat.append("gamestate recieved");
+				}else if(o instanceof cs342project5.Game){
+					game = (cs342project5.Game) o;
+					chat.append("game recieved");
 				}else if(o instanceof Envelope){
 						e = (Envelope) o;
 						//Special server message that adds to the user list.
@@ -344,7 +353,6 @@ public class Client extends JFrame{
 		}
 
 	}
-
 	public int getPlayerID() {
 		return playerID;
 	}

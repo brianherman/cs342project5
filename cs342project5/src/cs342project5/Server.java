@@ -10,6 +10,7 @@ public class Server extends JFrame implements ServerThreadIterface{
 	private static Vector<ServerThread> threads = new Vector<ServerThread>();
 	private JTextArea lta;
 	private Vector<Game> games = new Vector<Game>();
+	private Vector<GameState> gameStates = new Vector<GameState>();
 	/**
 	 * GUI for the server.
 	 */
@@ -79,6 +80,7 @@ public class Server extends JFrame implements ServerThreadIterface{
 	public void send(GameState g) {
 		for(ServerThread s: threads)
 		{
+			log("send gamestate being called");
 			s.send(g);
 		}	
 	}
@@ -140,5 +142,12 @@ public class Server extends JFrame implements ServerThreadIterface{
 	public void addGame(Game g) {
 		games.add(g);
 	}
-	
+	@Override
+	public void addGameState(GameState g) {
+		gameStates.add(g);
+	}
+	@Override
+	public Vector<GameState> getGameStates() {
+		return gameStates;
+	}
 }

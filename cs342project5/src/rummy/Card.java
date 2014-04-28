@@ -3,7 +3,7 @@ package rummy;
  * Created by bob on 4/18/14.
  * Pretty self explanatory -- a card class.
  */
-public class Card
+public class Card implements java.io.Serializable
 {
     // Ace through Kng (Ace is low card)
     private int rank;

@@ -17,12 +17,12 @@ import java.util.Collections;
  * screen to our liking. Like this:
  * 
  */
-public class Player extends JFrame implements ActionListener {
+public class Player extends JFrame implements ActionListener, java.io.Serializable{
 	// the array of cards that is the player's hand
 	private ArrayList<Card> hand;
 	private TableButton[][] buttons = new TableButton[10][13];
 	// declare the array of sets
-	static ArrayList<LaidDownSetsOfCards> arrayOfLaidDownSets = new ArrayList<LaidDownSetsOfCards>();
+	public static ArrayList<LaidDownSetsOfCards> arrayOfLaidDownSets = new ArrayList<LaidDownSetsOfCards>();
 	public TableButton button;
 
 	// the player's ID

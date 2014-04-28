@@ -15,8 +15,8 @@ import java.util.ArrayList;
  */
 public class Game implements java.io.Serializable
 {
-	static Deck deck;
-	static DiscardPile discardPile;
+	public static Deck deck;
+	public static DiscardPile discardPile;
 
 	public static Player player1;
 	public static Player player2;
