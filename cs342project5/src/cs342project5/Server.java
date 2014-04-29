@@ -39,7 +39,7 @@ public class Server extends JFrame implements ServerThreadIterface{
 				while(true){
 					try{
 						//Create a new thread and start it on each accept.
-						ServerThread st = new ServerThread(serverSocket.accept(),this);
+						ServerThread st = new ServerThread(serverSocket.accept(),this, threads.size());
 						new Thread(st).start();
 						threads.add(st);
 					}catch(SocketTimeoutException ste){
@@ -80,7 +80,7 @@ public class Server extends JFrame implements ServerThreadIterface{
 	public void send(GameState g) {
 		for(ServerThread s: threads)
 		{
-			log("send gamestate being called");
+			log("send gamestate being called" + s.getid());
 			s.send(g);
 		}	
 	}
@@ -88,12 +88,7 @@ public class Server extends JFrame implements ServerThreadIterface{
 	public void send(Game g) {
 		for(ServerThread s: threads)
 		{
-			for(Player p : g.getPlayers())
-			{
-				if(s.name().equals(p.name())){
-					s.send(g);
-				}
-			}
+			s.send(g);
 		}
 	}
 	/**

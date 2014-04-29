@@ -18,10 +18,11 @@ public class ServerThread implements Runnable {
 	private ServerThreadIterface callback = null;
 	private String name = null;
 	private int id;
-	public ServerThread(Socket s, ServerThreadIterface stc)
+	public ServerThread(Socket s, ServerThreadIterface stc, int i)
 	{
 		socket = s;
 		callback = stc;
+		id = i;
 	}
 	@Override
 	public void run() {
@@ -43,6 +44,7 @@ public class ServerThread implements Runnable {
 				}else if(o instanceof GameState)
 				{
 					gs = (GameState)o;
+					//callback.send(gs);
 				}
 				/*
 				 * Special commands.
@@ -69,39 +71,39 @@ public class ServerThread implements Runnable {
 								callback.send(m);
 								callback.addGame(game2Add);
 								callback.send(game2Add);
-								
+
 								callback.addGameState(gs);
-								callback.send(gs);
+								//callback.send(gs);
 							}else
 								if(m.sender() != null && m.message().startsWith("JoinGame.")){
 									String getNumber[] = m.message().split(" ");
 									//callback.log(getNumber[1]);
 									Vector<Game> games = callback.getGame();
 									Vector<GameState> gameStates = callback.getGameStates();
-									
+
 									callback.log(" " + games.size());
-									
+
 									for(Game ga : games){
-										for( GameState gsa: gameStates){
-											if( ga.id()==Integer.parseInt(getNumber[1]))
-											{
-												callback.log("sending game info");
-												id=Integer.parseInt(getNumber[1]);
-												
-												ga.addPlayer(new Player(name));
-												m = new Envelope("Server", "Successful Join. " + getNumber[1],callback.getUsers());
-												callback.send(ga);
-												callback.send(gsa);
-											}
+										if( ga.id()==Integer.parseInt(getNumber[1]))
+										{
+											callback.log("sending game info");
+											id=Integer.parseInt(getNumber[1]);
+											ga.addPlayer(new Player(name));
+											m = new Envelope("Server", "Successful Join. " + getNumber[1],callback.getUsers());
+											callback.send(ga);
+											//callback.send(gsa);
 										}
 									}
 								}
 					}else{
 						if(m != null)
 							callback.send(m);
-					}
-				}
 
+					}
+
+				}
+				if(gs != null)
+					callback.send(gs);
 			}
 
 		} catch (IOException e) {

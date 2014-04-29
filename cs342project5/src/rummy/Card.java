@@ -19,5 +19,4 @@ public class Card implements java.io.Serializable
     private String cardString;
     public String getCardString() {return cardString;}
     public void setCardString(String cardString) {this.cardString = cardString;}
-    
 }

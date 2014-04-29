@@ -11,7 +11,7 @@ import java.util.Collections;
  */
 public class Deck implements java.io.Serializable
 {
-    private ArrayList<Card> deck = new ArrayList<Card>();
+    public ArrayList<Card> deck = new ArrayList<Card>();
 
     // deck constructor
     public Deck()
@@ -61,9 +61,9 @@ public class Deck implements java.io.Serializable
      */
     public Card drawCardFromDeck()
     {
-        Card tempCard = deck.get(0); // get the top card in the deck
-        deck.remove(0);              // remove it from the deck
-        return tempCard;             // give the card to the player
+        Card tempCard = deck.remove(0); // get the top card in the deck
+                     				    // remove it from the deck
+        return tempCard;                // give the card to the player
     }
     public int getSize(){
     	return deck.size();

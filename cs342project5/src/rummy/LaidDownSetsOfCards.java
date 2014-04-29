@@ -7,6 +7,8 @@ import java.util.ArrayList;
  */
 public class LaidDownSetsOfCards implements java.io.Serializable
 {
+	private boolean run;
+
     private ArrayList<Card> laidDownSetOfCards;
     public ArrayList<Card> getLaidDownSetOfCards() {return laidDownSetOfCards;}
     public void setLaidDownSetOfCards(ArrayList<Card> laidDownSetOfCards) {this.laidDownSetOfCards = laidDownSetOfCards;}
@@ -36,6 +38,22 @@ public class LaidDownSetsOfCards implements java.io.Serializable
     {
         laidDownSetOfCards.add(0, card);
     }
+	
+	public ArrayList<Card> getLaydown(){
+		return laidDownSetOfCards;
+	}
+	
+	public boolean getIfRun(){
+		return run;
+	}
+	
+	public void addCard(Card card){
+		laidDownSetOfCards.add(card);
+	}
+	
+	public void addCardToBeginning(Card card){
+		laidDownSetOfCards.add(0, card);
+	}
 
     public void addCardToEndOfSet(Card card)
     {

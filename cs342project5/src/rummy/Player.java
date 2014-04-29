@@ -22,8 +22,11 @@ public class Player extends JFrame implements ActionListener, java.io.Serializab
 	private ArrayList<Card> hand;
 	private TableButton[][] buttons = new TableButton[10][13];
 	// declare the array of sets
-	public static ArrayList<LaidDownSetsOfCards> arrayOfLaidDownSets = new ArrayList<LaidDownSetsOfCards>();
+//	public static ArrayList<LaidDownSetsOfCards> laydownArray = new ArrayList<LaidDownSetsOfCards>();
+	public ArrayList<Laydowns> laydownArray = new ArrayList<Laydowns>();
+
 	public TableButton button;
+	private boolean finished=false;
 
 	// the player's ID
 	private int playerID;
@@ -45,6 +48,7 @@ public class Player extends JFrame implements ActionListener, java.io.Serializab
 	public JButton discardPileButton, deckButton, card1Button, card2Button,
 			card3Button, card4Button, card5Button, card6Button, card7Button,
 			card8Button;
+	public JLabel deckViewFooter;
 
 	public JButton continueButton;
 
@@ -55,7 +59,29 @@ public class Player extends JFrame implements ActionListener, java.io.Serializab
 	public DiscardPile discardPile;
 	private cs342project5.Client client;
 	
-	public Player(Client r) {
+	public void lock(){
+		discardPileButton.setEnabled(false);
+		deckButton.setEnabled(false);
+		card1Button.setEnabled(false);
+		card2Button.setEnabled(false);
+		card3Button.setEnabled(false);
+		card4Button.setEnabled(false);
+		card5Button.setEnabled(false);
+		card7Button.setEnabled(false);
+		card8Button.setEnabled(false);
+	}
+	public void unlock(){
+		discardPileButton.setEnabled(true);
+		deckButton.setEnabled(true);
+		card1Button.setEnabled(true);
+		card2Button.setEnabled(true);
+		card3Button.setEnabled(true);
+		card4Button.setEnabled(true);
+		card5Button.setEnabled(true);
+		card7Button.setEnabled(true);
+		card8Button.setEnabled(true);
+	}
+	public Player(Client r, boolean vis) {
 		client=r;
 		// add the tabs to the tabbedPane
 		tabbedPane.add("Deck and Discard", deckView);
@@ -72,32 +98,7 @@ public class Player extends JFrame implements ActionListener, java.io.Serializab
 		// visible
 		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		this.setSize(880, 1000);
-		this.setVisible(true);
-	}
-
-	private void createTableTab() {
-		// set the layout (notice that it's ROW, COLUMN for the argument)
-		tableView.setLayout(new GridLayout(10, 13));
-
-		// create each button
-		for (int row = 0; row < 10; row++){
-			for (int col = 0; col < 13; col++) {
-				// instantiate the button
-				button = new TableButton();
-
-				// put the button into out 2d array of buttons
-				buttons[row][col] = button;
-
-				// set the button as "unoccupied"
-				buttons[row][col].setOccupiedButton(false);
-
-				// set the default icon (question mark)
-				button.setIcon(questionMark);
-
-				// add it to the panel
-				tableView.add(button);
-			}
-		}
+		this.setVisible(vis);
 	}
 
 	private void createHandTab() {
@@ -137,6 +138,30 @@ public class Player extends JFrame implements ActionListener, java.io.Serializab
 		handView.add(card8Button);
 	}
 
+	private void createTableTab() {
+		// set the layout (notice that it's ROW, COLUMN for the argument)
+		tableView.setLayout(new GridLayout(10, 13));
+
+		// create each button
+		for (int row = 0; row < 10; row++){
+			for (int col = 0; col < 13; col++) {
+				// instantiate the button
+				button = new TableButton();
+
+				// put the button into out 2d array of buttons
+				buttons[row][col] = button;
+
+				// set the button as "unoccupied"
+				buttons[row][col].setOccupiedButton(false);
+
+				// set the default icon (question mark)
+				button.setIcon(questionMark);
+
+				// add it to the panel
+				tableView.add(button);
+			}
+		}
+	}
 	/**
 	 * This just creates the tab for the "deck view" -- the discard.
 	 */
@@ -148,36 +173,552 @@ public class Player extends JFrame implements ActionListener, java.io.Serializab
 		// just an facedown card, the other is the top of the discard pile)
 		deckButton = new JButton();
 		discardPileButton = new JButton();
-		continueButton = new JButton();
 
 		// display the face down card to represent the deck and, for
 		// the time being, the discard pile
 		deckButton.setIcon(faceDownCard);
 		discardPileButton.setIcon(faceDownCard);
-		continueButton.setIcon(continueImage);
+
+		// set up the footer
+		deckViewFooter = new JLabel();
 
 		deckView.add(deckButton);
 		deckView.add(discardPileButton);
-		deckView.add(continueButton);
-		
+		deckView.add(deckViewFooter);
 	}
 
 	/**
 	 * This updates the Gui -- resets the everything that needs to be resetted
 	 * (whether it needs it or not)
 	 */
-	public void populateGui(Card discard) {
+	public void updateGui(Card discard) {
 		// first let's populate the discard button
 		String discardString = discard.getCardString();
 		ImageIcon discardCard = new ImageIcon(discardString);
 		discardPileButton.setIcon(discardCard);
 
 		// then let's populate the hand
-		ArrayList<Card> tempArr = this.getHand();
-		updateGuiHand(tempArr);
+		
+		int handSize = hand.size();
+		
+		for (int i = 0; i < handSize; i++) {
+			
+				Card card = hand.get(i);
+				String cardString = card.getCardString();
+				ImageIcon cardIcon = new ImageIcon(cardString);
+				if (0 == i)
+					card1Button.setIcon(cardIcon);
+				else if (1 == i)
+					card2Button.setIcon(cardIcon);
+				else if (2 == i)
+					card3Button.setIcon(cardIcon);
+				else if (3 == i)
+					card4Button.setIcon(cardIcon);
+				else if (4 == i)
+					card5Button.setIcon(cardIcon);
+				else if (5 == i)
+					card6Button.setIcon(cardIcon);
+				else if (6 == i)
+					card7Button.setIcon(cardIcon);
+				else
+					card8Button.setIcon(cardIcon);
+		}
+			 for (int i=handSize; i<8; i++) {
+				if (0 == i)
+					card1Button.setIcon(faceDownCard);
+				else if (1 == i)
+					card2Button.setIcon(faceDownCard);
+				else if (2 == i)
+					card3Button.setIcon(faceDownCard);
+				else if (3 == i)
+					card4Button.setIcon(faceDownCard);
+				else if (4 == i)
+					card5Button.setIcon(faceDownCard);
+				else if (5 == i)
+					card6Button.setIcon(faceDownCard);
+				else if (6 == i)
+					card7Button.setIcon(faceDownCard);
+				else
+					card8Button.setIcon(faceDownCard);
+			}
+			
+		}
+
+	
+
+	/**
+	 * Bubble sorts a players hand
+	 * 
+	 * @return ArrayList<Card>
+	 */
+
+	public ArrayList<Card> sortAnyHand(ArrayList<Card> hand) {
+
+		int sizeMinusOne = hand.size() - 1;
+		boolean loop = true;
+		while (loop) {
+			loop = false;
+			for (int j = 0; j < sizeMinusOne; j++) {
+				Card cardA = hand.get(j);
+				Card cardB = hand.get(j + 1);
+				int rankA = cardA.getRank();
+				int rankB = cardB.getRank();
+				if (rankA > rankB) {
+					Collections.swap(hand, j, j + 1);
+					loop = true;
+				}
+			}
+		}
+		return hand;
+	}
+
+	public ArrayList<Card> sortHand() {
+		// bubble sort the hand into order as per the rank of the card
+		// there's no need to actually read this code - treat it as a black box
+		// that returns a sorted hand
+		int sizeMinusOne = hand.size() - 1;
+		boolean loop = true;
+		while (loop) {
+			loop = false;
+			for (int j = 0; j < sizeMinusOne; j++) {
+				Card cardA = hand.get(j);
+				Card cardB = hand.get(j + 1);
+				int rankA = cardA.getRank();
+				int rankB = cardB.getRank();
+				if (rankA > rankB) {
+					Collections.swap(hand, j, j + 1);
+					loop = true;
+				}
+			}
+		}
+		return hand;
+	}
+
+	/**
+	 * This method will drive us through an entire player's turn. We will
+	 * probably update the GUI periodically throughout the turn. We break the
+	 * turn up into three stages: Stage (1) The user chooses either a card off
+	 * of the deck or a card off of the discard pile Stage (2) The user chooses
+	 * to drop a set or not Stage (3) The user discards That's the end of the
+	 * turn, We may update the gui periodically throughout the turn, or not.
+	 */
+	public void playerTurn() {
+		// shows a "welcome to Rummy" message
+		//showStageOneMessage();
+
+		// we do stage 1 (which will call stage2 (which will call stage3)))
+		
+		
+		stage1();
+		
+	}
+
+	private void stage1() {
+		// a while loop that takes us through the first stage in the game
+
+		while (inStageOne) {
+			/*
+			 * If the user clicks the deck button, then we add the card from the
+			 * deck to her hand. We also include -- in the action listener
+			 * itself -- a removal of the action listener when it's called.
+			 */
+			
+			deckButton.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent actionEvent) {
+					// first, we get the card, then we add it to the player's
+					// hand, then we update the gui
+					Card card = Game.deck.drawCardFromDeck();
+					hand.add(card);
+					updateGui(Game.discardPile.getDiscardDeck().get(
+							Game.discardPile.getDiscardDeck().size() - 1));
+
+					// black box code -- removes the action listener
+					for (ActionListener act : discardPileButton
+							.getActionListeners())
+						discardPileButton.removeActionListener(act);
+					for (ActionListener act : deckButton.getActionListeners())
+						deckButton.removeActionListener(act);
+					stage2();
+				}
+			});
+			discardPileButton.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent actionEvent) {
+					// if the size of the deck is one, we're taking the ONLY
+					// card in the discard pile! Therefore we have to
+					// make the discard pile blank
+					if (Game.discardPile.getDiscardDeck().size() == 1) {
+						Card card = Game.discardPile.drawCard();
+						hand.add(card);
+						updateGui(card);
+						discardPileButton.setIcon(faceDownCard);
+					} else {
+						Card topDiscard = Game.discardPile.drawCard();
+						hand.add(topDiscard);
+
+						String discardString = topDiscard.getCardString();
+						ImageIcon discardCard = new ImageIcon(discardString);
+						updateGui(Game.discardPile.getCurrentDiscardCard());
+					}
+					// black box code -- removes the used action listener
+					for (ActionListener act : discardPileButton
+							.getActionListeners())
+						discardPileButton.removeActionListener(act);
+					for (ActionListener act : deckButton.getActionListeners())
+						deckButton.removeActionListener(act);
+					stage2();
+				}
+
+			});
+			inStageOne = false;
+		}
+	}
+
+	private void stage2() {
+
+		tabbedPane.setSelectedIndex(1);
+
+		boolean addToExistingLaydown;
+
+		String s = (String) JOptionPane
+				.showInputDialog(
+						this,
+						"enter the cards you would like to laydown, or 0 for no laydown",
+						"Customized Dialog", JOptionPane.PLAIN_MESSAGE, null,
+						null, "enter card numbers");
+
+		if (s.equals("0")) {
+			stage3();
+		}
+
+		else {
+			Object[] options = { "New", "Existing" };
+			int n = JOptionPane.showOptionDialog(this,
+					"Is this a new set or are you adding to an existing set?",
+					"new or existing?", JOptionPane.YES_NO_OPTION,
+					JOptionPane.QUESTION_MESSAGE, null, // do not use a custom
+														// Icon
+					options, // the titles of buttons
+					options[0]); // default button title
+
+			// user wants to add to new set
+			if (n == 0) {
+				ArrayList<Card> set = new ArrayList<Card>();
+				for (int i = 0; i < s.length(); i++)
+					if (Character.isDigit(s.charAt(i)))
+						// adds the card from the hand to the set to be
+						// layeddown
+						set.add(hand.get(Character.getNumericValue(s.charAt(i)-1)));
+				set = sortAnyHand(set);
+				int setResult = isLegalNewSet(set);
+
+				if (setResult == 0){
+					JOptionPane.showMessageDialog(this,
+							"Invalid laydown.  Please choose again.");
+					stage2();
+				}
+				else if (setResult == 1){
+					laydownArray.add(new Laydowns(set, false));
+					removeCardsAfterLaydown(s);
+					updateGui(Game.discardPile.getCurrentDiscardCard());
+					stage3();
+				}
+				else if (setResult == 2){
+					laydownArray.add(new Laydowns(set, true));
+					removeCardsAfterLaydown(s);
+					updateGui(Game.discardPile.getCurrentDiscardCard());
+					stage3();
+				}
+			}
+
+			// user wants to add to an existing set
+			if (n == 1) {
+				if (s.length() != 1) {
+					JOptionPane
+							.showMessageDialog(this,
+									"Please choose 1 card to add to an existing laydown");
+					stage2();
+				}
+
+				int cardNumber = Integer.parseInt(s);
+				Card card = hand.get(cardNumber - 1);
+				int result = isLegalAddToExistingSet(card);
+				if (result == 0) {
+					JOptionPane.showMessageDialog(this,
+							"Invalid laydown.  Please choose again.");
+					stage2();
+				}
+				stage3();
+			}
+
+		}
+
+		System.out.println(s);
 
 	}
 
+	public void stage3() {
+		JOptionPane.showMessageDialog(this,
+				"Select a card from your hand to discard");
+
+		
+		
+		card1Button.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent actionEvent) {
+				// add an action listener to each card in the hand
+				finished=true;
+				Card card = hand.get(0);
+				hand.remove(0);
+				card1Button.setIcon(faceDownCard);
+				Game.discardPile.putCardOnDiscardPile(card);
+				stage3RemoveActionListeners();
+				Game.updateGui(card);
+				
+			}
+		});
+		card2Button.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent actionEvent) {
+				// add an action listener to each card in the hand
+				finished=true;
+				Card card = hand.get(1);
+				hand.remove(1);
+				card2Button.setIcon(faceDownCard);
+				Game.discardPile.putCardOnDiscardPile(card);
+				stage3RemoveActionListeners();
+				Game.updateGui(card);
+				
+			}
+		});
+		card3Button.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent actionEvent) {
+				// add an action listener to each card in the hand
+				finished=true;
+				Card card = hand.get(2);
+				hand.remove(2);
+				card3Button.setIcon(faceDownCard);
+				Game.discardPile.putCardOnDiscardPile(card);
+				stage3RemoveActionListeners();
+				Game.updateGui(card);
+				
+			}
+		});
+		card4Button.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent actionEvent) {
+				// add an action listener to each card in the hand
+				finished=true;
+				Card card = hand.get(3);
+				hand.remove(3);
+				card4Button.setIcon(faceDownCard);
+				Game.discardPile.putCardOnDiscardPile(card);
+				stage3RemoveActionListeners();
+				Game.updateGui(card);
+				
+			}
+		});
+		card5Button.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent actionEvent) {
+				// add an action listener to each card in the hand
+				finished=true;
+				Card card = hand.get(4);
+				hand.remove(4);
+				card5Button.setIcon(faceDownCard);
+				Game.discardPile.putCardOnDiscardPile(card);
+				stage3RemoveActionListeners();
+				Game.updateGui(card);
+				
+			}
+		});
+		card6Button.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent actionEvent) {
+				// add an action listener to each card in the hand
+				finished=true;
+				Card card = hand.get(5);
+				hand.remove(5);
+				card6Button.setIcon(faceDownCard);
+				Game.discardPile.putCardOnDiscardPile(card);
+				stage3RemoveActionListeners();
+				Game.updateGui(card);
+				
+			}
+		});
+		card7Button.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent actionEvent) {
+				// add an action listener to each card in the hand
+				finished=true;
+				Card card = hand.get(6);
+				hand.remove(6);
+				card7Button.setIcon(faceDownCard);
+				Game.discardPile.putCardOnDiscardPile(card);
+				stage3RemoveActionListeners();
+				Game.updateGui(card);
+				
+			}
+		});
+		card8Button.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent actionEvent) {
+				// add an action listener to each card in the hand
+				finished=true;
+				Card card = hand.get(7);
+				hand.remove(7);
+				card8Button.setIcon(faceDownCard);
+				Game.discardPile.putCardOnDiscardPile(card);
+				stage3RemoveActionListeners();
+				Game.updateGui(card);
+				
+			}
+		});
+		
+		
+	}
+
+	private void showStageOneMessage() {
+		JOptionPane
+				.showMessageDialog(
+						Player.this,
+						"Hi. Welcome to Rummy, written by some stressed students!\n"
+								+ "First you must take a card from either the deck or the top of the discard pile.\n"
+								+ "So take a look at your options, and when you are done click on either the face down\n"
+								+ "card (the deck) or the card that you can see (the discard pile) to add the card\n"
+								+ "to your hand.", "Choices",
+						JOptionPane.PLAIN_MESSAGE);
+
+	}
+
+	// this is the getter and setter for the player's hand
+	public ArrayList<Card> getHand() {
+		return hand;
+	}
+
+	public void setHand(ArrayList<Card> hand) {
+		this.hand = hand;
+	}
+
+	// this is the getter and setter for the player's ID
+	public int getPlayerID() {
+		return playerID;
+	}
+
+	public void setPlayerID(int playerID) {
+		this.playerID = playerID;
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent actionEvent) {
+
+	}
+
+	// returns 0 if not legal, 1 if a n of a kind, 2 if a run
+	// assumes the set is sorted
+	public int isLegalNewSet(ArrayList<Card> set) {
+		if (set.size() < 3)
+			return 0;
+		// if 3 of a kind
+		else if (set.size() == 3
+				&& set.get(0).getRank() == set.get(1).getRank()
+				&& set.get(1).getRank() == set.get(2).getRank()) {
+			return 1;
+		}
+		// if 4 of a kind
+		else if (set.size() == 4
+				&& set.get(0).getRank() == set.get(1).getRank()
+				&& set.get(1).getRank() == set.get(2).getRank()
+				&& set.get(2).getRank() == set.get(3).getRank())
+			return 1;
+		// if its a run
+		else {
+			for (int i1 = 0; i1 < set.size() - 1; i1++)
+				// checks suit
+				if (set.get(i1).getSuit() != set.get(i1 + 1).getSuit())
+					return 0;
+			// checks straight
+			for (int i2 = 0; i2 < set.size() - 1; i2++)
+				if (set.get(i2).getRank()+1 != set.get(i2 + 1).getRank() )
+					return 0;
+			return 2;
+		}
+
+	}
+
+	// lots of confusing code, just assume it works
+	// returns 0 if illegal add, returnss 1 if legal add
+
+	public int isLegalAddToExistingSet(Card card) {
+
+		for (int i = 0; i < laydownArray.size(); i++) {
+			if (laydownArray.get(i).getIfRun() == false
+					&& laydownArray.get(i).getLaydown().size() == 3
+					&& laydownArray.get(i).getLaydown().get(0).getRank() == card
+							.getRank()) {
+
+				laydownArray.get(i).addCard(card);
+				return 1;
+			} else if (laydownArray.get(i).getIfRun()
+					&& laydownArray.get(i).getLaydown().get(0).getSuit() == card
+							.getSuit()
+					&& laydownArray.get(i).getLaydown().get(0).getRank() == (card
+							.getRank() + 1)) {
+				laydownArray.get(i).addCardToBeginning(card);
+				return 1;
+			} else if (laydownArray.get(i).getIfRun()
+					&& laydownArray.get(i).getLaydown().get(0).getSuit() == card
+							.getSuit()
+					&& laydownArray.get(i).getLaydown()
+							.get(laydownArray.get(i).getLaydown().size())
+							.getRank() == (card.getRank() - 1)) {
+				laydownArray.get(i).addCard(card);
+				return 1;
+			}
+
+		}
+		return 0;
+	}
+	
+	public void stage3RemoveActionListeners(){
+		
+		for (ActionListener act : card1Button.getActionListeners())
+			card1Button.removeActionListener(act);
+		for (ActionListener act : card2Button.getActionListeners())
+			card2Button.removeActionListener(act);
+		for (ActionListener act : card3Button.getActionListeners())
+			card3Button.removeActionListener(act);
+		for (ActionListener act : card4Button.getActionListeners())
+			card4Button.removeActionListener(act);
+		for (ActionListener act : card5Button.getActionListeners())
+			card5Button.removeActionListener(act);
+		for (ActionListener act : card6Button.getActionListeners())
+			card6Button.removeActionListener(act);
+		for (ActionListener act : card7Button.getActionListeners())
+			card7Button.removeActionListener(act);
+		for (ActionListener act : card8Button.getActionListeners())
+			card8Button.removeActionListener(act);
+		
+		inStageOne=true;
+	}
+	
+	public void removeCardsAfterLaydown(String s){
+		
+		int count=0;
+		for (int i = 0; i < s.length(); i++)
+			if (Character.isDigit(s.charAt(i))){
+				hand.remove(Character.getNumericValue(s.charAt(i)-1-count));
+				count++;
+			}
+	}
+	public boolean checkForEndOfGame(){
+		return finished;
+	}
+	public void setFinished(boolean fin){
+		finished=fin;
+	}
 	public void updateGuiHand(ArrayList<Card> hand) {
 		int handSize = hand.size();
 		int count = 0;
@@ -223,777 +764,19 @@ public class Player extends JFrame implements ActionListener, java.io.Serializab
 			count++;
 		}
 	}
-
 	/**
-	 * Bubble sorts a players hand
-	 * 
-	 * @return ArrayList<Card>
+	 * This updates the Gui -- resets the everything that needs to be resetted
+	 * (whether it needs it or not)
 	 */
-	public ArrayList<Card> sortHand() {
-		// bubble sort the hand into order as per the rank of the card
-		int sizeMinusOne = hand.size() - 1;
-		boolean loop = true;
-		while (loop) {
-			loop = false;
-			for (int j = 0; j < sizeMinusOne; j++) {
-				Card cardA = hand.get(j);
-				Card cardB = hand.get(j + 1);
-				int rankA = cardA.getRank();
-				int rankB = cardB.getRank();
-				if (rankA > rankB) {
-					Collections.swap(hand, j, j + 1);
-					loop = true;
-				}
-			}
-		}
-		return hand;
-	}
+	public void populateGui(Card discard) {
+		// first let's populate the discard button
+		String discardString = discard.getCardString();
+		ImageIcon discardCard = new ImageIcon(discardString);
+		discardPileButton.setIcon(discardCard);
 
-	/**
-	 * This method will drive us through an entire player's turn. We will
-	 * probably update the GUI periodically throughout the turn. We break the
-	 * turn up into three stages: Stage (1) The user chooses either a card off
-	 * of the deck or a card off of the discard pile Stage (2) The user chooses
-	 * to drop a set or not Stage (3) The user discards Note that this is like
-	 * the Russian Doll of methods -- Stage2 has to be called in Stage1, Stage3
-	 * has to be called in Stage2.
-	 */
-	public void playerTurn() {
-		// shows a "welcome to Rummy" message
-
-		// we do stage 1 (which will call stage2 (which will call stage3)))
-		stage1();
-	}
-	 /*
-     * stage1
-     * update deck and the discard pile depending which it gets drawn from
-     * stage2
-     * drop your cards
-     * update tableview
-     * stage3
-     * update discard pile
-     * if the deck is 0 update deck
-     */
-	private void stage1() {
-		// a while loop that takes us through the first stage in the game
-		if(Game.deck.getSize()==0){
-			Game.deck.setDeck(Game.discardPile.getDiscardDeck());
-		}
-		tabbedPane.setSelectedIndex(0);
-		showStageOneMessage();
-		/*
-		 * If the user clicks the deck button, then we add the card from the
-		 * deck to her hand. We also include -- in the action listener itself --
-		 * a removal of the action listener when it's called.
-		 */
-		deckButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent actionEvent) {
-				// first, we get the card, then we add it to the player's hand,
-				// then we update the gui
-				Card card = Game.deck.drawCardFromDeck();
-				hand.add(card);
-				populateGui(Game.discardPile.getDiscardDeck().get(
-						Game.discardPile.getDiscardDeck().size() - 1));
-
-				// black box code -- removes the action listener
-				for (ActionListener act : discardPileButton
-						.getActionListeners())
-					discardPileButton.removeActionListener(act);
-				for (ActionListener act : deckButton.getActionListeners())
-					deckButton.removeActionListener(act);
-
-				
-				stage2();
-			}
-		});
-		discardPileButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent actionEvent) {
-				// if the size of the deck is one, we're taking the ONLY
-				// card in the discard pile! Therefore we have to
-				// make the discard pile blank
-				if (Game.discardPile.getDiscardDeck().size() == 1) {
-					Card card = Game.discardPile.drawCard();
-					hand.add(card);
-					populateGui(card);
-					discardPileButton.setIcon(faceDownCard);
-				} else {
-					Card topDiscard = Game.discardPile.drawCard();
-					hand.add(topDiscard);
-
-					String discardString = topDiscard.getCardString();
-					ImageIcon discardCard = new ImageIcon(discardString);
-					populateGui(Game.discardPile.getCurrentDiscardCard());
-				}
-				// black box code -- removes the used action listener
-				for (ActionListener act : discardPileButton
-						.getActionListeners())
-					discardPileButton.removeActionListener(act);
-				for (ActionListener act : deckButton.getActionListeners())
-					deckButton.removeActionListener(act);
-			
-				// call for stage2
-				stage2();
-			}
-		});
-		
-		inStageOne = false;
-		
-	}// END WHILE LOOP
-
-	private void stage2() {
-		// user has to choose whether to create a new set or add to existing set
-		boolean isNewSet = false;
-
-		// variable that shows three things: (1) legality of set, (2) run, (3) n
-		// of a kind
-		// this forces a particular tab to open --the "hand" tab
-		tabbedPane.setSelectedIndex(1);
-
-		// user chooses what cards to lay down (if any)
-		String discardString = userDiscards();
-
-		System.out.println("\n\n\n" + discardString);
-		// if the user chooses to not lay down any cards, we move on to stage
-		// three
-		if (discardString.equals("0")) {
-	
-			stage3();
-		}
-
-		// else we determine if the user is laying down a new set or not
-		else {
-			isNewSet = userChoiceIsNewSet();
-			if (isNewSet)
-				makeNewSet(discardString, isNewSet);
-			else
-				addToExistingSet(discardString, isNewSet);
-			
-	
-			stage3();
-		}
-		
-		/*
-		 * If the user wants to make a new set, we call makeNewSet. This method
-		 * accomplishes a lot -- it checks the legit of the chosen cards and
-		 * updates the gui. It's NOT a black box. The same goes for
-		 * "addToExistingSet", as it's not exactly the simplest method either.
-		 */
-
-		// this is where we need a pause -- this will lead us back to the loop
-		// allowTheUserToExamineCards();
-		
-	}
-
-	private void allowTheUserToExamineCards() {
-		tabbedPane.setSelectedIndex(1); // switch the pane back to discard
-		JOptionPane
-				.showMessageDialog(
-						this,
-						"This is a good spot for a pause.\n\n"
-								+ "Take a moment to look at your hand and the shared cards,\n"
-								+ "to decide if and what cards you would like to lay down next.\n\n"
-								+ "When you have decided, hit the blue \"continue\" button in\n"
-								+ "the \"Deck and Discard\" view.");
-		continueButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent actionEvent) {
-				// we are in an infinite loop until the user enters a zero or
-				// <enter>
-				stage2();
-			}
-		});
-	}
-
-	private void addToExistingSet(String discardString, boolean isNewSet) {
-		// create a temporary array to examine the cards
-		ArrayList<Card> tempCardArray = putUserChosenCardsIntoArray(
-				discardString, isNewSet);
-		int size = tempCardArray.size();
-		int numberOfSets = arrayOfLaidDownSets.size();
-		boolean addToRun = false;
-		int numCardsInSet = 0;
-
-		// check all of the sets that are runs to see if any fit
-		for (int i = 0; i < size; i++) {
-			// get the card that we're looking at
-			Card currentCard = tempCardArray.get(i);
-
-			// go through each set, trying to fit it in the "run" sets
-			for (int setNumber = 0; setNumber < numberOfSets; setNumber++) {
-				// first, only look at the sets with "runs"
-				if (arrayOfLaidDownSets.get(setNumber).isConsecutiveCardSet()) {
-					// get the set
-					LaidDownSetsOfCards set = arrayOfLaidDownSets
-							.get(setNumber);
-
-					// get the lowest card in the set
-					Card lowestCardInSet = set.getCardInLaidDownSet(0);
-
-					// compare the ranks (must be one less), compare the suits
-					if (compareRanksOfCards(currentCard, lowestCardInSet))
-						if (compareSuitsOfCards(currentCard, lowestCardInSet)) {
-							addToRun = true;
-							set.addCardToBeginningOfSet(currentCard);
-							addCardToGui(currentCard, setNumber, addToRun,
-									numCardsInSet);
-						}
-
-					// next we'll check if we can fit it in AFTER the set
-					// get the highest card in the set
-					Card highestCardInSet = set.getCardInLaidDownSet(set
-							.getSizeOfSet() - 1);
-
-					// compare the ranks (must be one MORE), compare the suits
-					if (compareRanksOfCards(currentCard, highestCardInSet))
-						if (compareSuitsOfCards(currentCard, highestCardInSet)) {
-							addToRun = false;
-							set.addCardToEndOfSet(currentCard);
-							addCardToGui(currentCard, setNumber, addToRun,
-									numCardsInSet);
-						}
-				}
-			}// END OF FOR LOOP THAT GOES THROUGH ALL "RUN" SETS IN SHARED TABLE
-
-			// go through each "nOfAKind" set, trying to fit it the card
-			for (int setNumber = 0; setNumber < numberOfSets; setNumber++) {
-				// first, only look at the sets with "nOfAKind"
-				if (arrayOfLaidDownSets.get(setNumber).isnOfAKindSet()) {
-					// get the set
-					LaidDownSetsOfCards set = arrayOfLaidDownSets
-							.get(setNumber);
-
-					// get the number of the "nOfAKind"
-					Card nOfKindCard = set.getCardInLaidDownSet(0);
-
-					// compare the cards (must be equal)
-					if (compareRanksOfCards(currentCard, nOfKindCard)) {
-						numCardsInSet = set.getSizeOfSet();
-						set.addCardToEndOfSet(currentCard);
-						addCardToGui(currentCard, setNumber, addToRun,
-								numCardsInSet);
-					} else
-						giveErrorMessageStartStage2Over();
-				}
-			}
-		}// END OF FOR LOOP THAT GOES THROUGH ALL CARDS IN SET
-		stage3();
-	}
-
-	private boolean compareRanksOfCards(Card cardA, Card cardB) {
-		int rankCardA = cardA.getRank();
-		int rankCardB = cardB.getRank();
-		if (rankCardA == rankCardB)
-			return true;
-		return false;
-	}
-
-	private boolean compareSuitsOfCards(Card cardA, Card cardB) {
-		int suitCardA = cardA.getSuit();
-		int suitCardB = cardB.getSuit();
-		if (suitCardA == suitCardB)
-			return true;
-		return false;
-	}
-
-	private void addCardToGui(Card currentCard, int setNumber,
-			boolean addToRun, int numCardsInSet) {
-		int col = 0;
-		String cardString = currentCard.getCardString();
-		ImageIcon cardImage = new ImageIcon(cardString);
-		if (addToRun)
-			col = currentCard.getRank() - 1;
-		else
-			col = numCardsInSet;
-		int row = setNumber;
-		buttons[row][col].setOccupiedButton(true);
-		buttons[row][col].setIcon(cardImage);
-		button.setRowOfCard(row);
-		button.setColumnOfCard(col);
-	}
-
-	/**
-	 * This is a driver method to make a new set -- we need to get the set,
-	 * check that the cards are legit, and add it to the gui
-	 */
-	private void makeNewSet(String discardString, boolean isNewSet) {
-		boolean isConsecutiveCardSet = false;
-
-		// create the array for the new Set
-		ArrayList<Card> set = new ArrayList<Card>();
-
-		// create a temporary array to examine the cards
-		ArrayList<Card> tempCardArray = putUserChosenCardsIntoArray(
-				discardString, isNewSet);
-
-		// what to do if the hand IS a run
-		if (arrayIsLegitRun(tempCardArray)) {
-			isConsecutiveCardSet = true;
-			removeSetCardsFromHand(tempCardArray);
-			addLaidDownCardsToSetAndButtonArray(tempCardArray,
-					isConsecutiveCardSet);
-		}
-		// else we check for an "nOfAKind"
-		else if (arrayIsLegit_nOfAKind(tempCardArray)) {
-			removeSetCardsFromHand(tempCardArray);
-			addLaidDownCardsToSetAndButtonArray(tempCardArray,
-					isConsecutiveCardSet);
-		}
-		// else they have not given a legit group of cards
-		else
-			giveErrorMessageStartStage2Over();
-	}
-
-	private ArrayList<Card> putUserChosenCardsIntoArray(String discardString,
-			boolean isNewSet) {
-		// simple count variable to count the number of cards in the set
-		int count = 0;
-
-		// parse the user's string to get the cards
-		int size = discardString.length();
-		ArrayList<Integer> tempArray = new ArrayList<Integer>();
-		for (int i = 0; i < size; i++) {
-			// if the character in the string is a digit
-			if (Character.isDigit(discardString.charAt(i))) {
-				// get the digit
-				int cardNumber = Character.getNumericValue(discardString
-						.charAt(i));
-
-				// check that it's within range of 1 to 8
-				if (cardNumber < 1 || cardNumber > 8)
-					invalidEntry(cardNumber);
-
-				// have to decrement the cardNumber so we can start at zero with
-				// the array
-				cardNumber--;
-
-				// add the card number to a temp array, increment count
-				tempArray.add(cardNumber);
-				count++;
-			}
-		}
-
-		// check that there are enough cards in the new set
-		if (count < 3 && isNewSet)
-			invalidSizeForNewSet(count);
-
-		// next we put the chosen cards into a temp card array and organize them
-		ArrayList<Card> tempCardArray = new ArrayList<Card>(size);
-		for (int i = 0; i < count; i++) {
-			Card card = hand.get(tempArray.get(i));
-			tempCardArray.add(card);
-		}
-		sortTempHand(tempCardArray);
-		return tempCardArray;
-	}
-
-	/**
-	 * This is easier. If the cards have the same rank, then they ARE nOfAKind.
-	 * 
-	 * @param tempCardArray
-	 * @return boolean
-	 */
-	private boolean arrayIsLegit_nOfAKind(ArrayList<Card> tempCardArray) {
-		int size = tempCardArray.size();
-		ArrayList<Integer> ranksOfCards = new ArrayList<Integer>(size);
-
-		// get all the ranks of the cards and check them against each other
-		for (int i = 0; i < size; i++) {
-			Card card = tempCardArray.get(i);
-			ranksOfCards.add(card.getRank());
-		}
-		for (int i = 0; i < size - 1; i++) {
-			int rankA = ranksOfCards.get(i);
-			int rankB = ranksOfCards.get(i + 1);
-			if (rankA != rankB)
-				return false;
-		}
-		return true;
-	}
-
-	private void addLaidDownCardsToSetAndButtonArray(
-			ArrayList<Card> tempCardArray, boolean isRun) {
-		// create a new laid down set
-		LaidDownSetsOfCards set = new LaidDownSetsOfCards();
-
-		// populate it with the cards from tempArray
-		set.setLaidDownSetOfCards(tempCardArray);
-
-		// set it's size (might be useful later)
-		set.setSizeOfSet(tempCardArray.size());
-
-		// add the set to the "set of sets"
-		arrayOfLaidDownSets.add(set);
-
-		// element number of the newly created set -- can act as a set ID
-		set.setSetID(arrayOfLaidDownSets.size());
-
-		int row = set.getSetID() - 1; // since the rows start at zero
-		int size = set.getSizeOfSet();
-
-		// set that it's a "run" or "nOfAKind"
-		if (isRun) {
-			// update the array of sets
-			set.setConsecutiveCardSet(true);
-			set.setnOfAKindSet(false);
-
-			// update the gui
-			for (int i = 0; i < size; i++) {
-				Card card = set.getCardInLaidDownSet(i);
-				String cardString = card.getCardString();
-				ImageIcon cardImage = new ImageIcon(cardString);
-				int col = card.getRank() - 1; // since the columns start at zero
-				buttons[row][col].setOccupiedButton(true); // set the button as
-															// "occupied"
-				buttons[row][col].setIcon(cardImage);
-				button.setRowOfCard(row);
-				button.setColumnOfCard(col);
-			}
-		} else {
-			// update the array of sets
-			set.setConsecutiveCardSet(false);
-			set.setnOfAKindSet(true);
-
-			// update the gui
-			for (int i = 0; i < size; i++) {
-				Card card = set.getCardInLaidDownSet(i);
-				String cardString = card.getCardString();
-				ImageIcon cardImage = new ImageIcon(cardString);
-				int col = i; // the variable is redundant, but this makes it
-								// more readable
-				buttons[row][col].setOccupiedButton(true);
-				buttons[row][col].setIcon(cardImage);
-			}
-		}
-	}
-
-	private void removeSetCardsFromHand(ArrayList<Card> tempCardArray) {
-		int size = tempCardArray.size();
-		for (int i = 0; i < size; i++) {
-			hand.remove(tempCardArray.get(i));
-		}
-		sortTempHand(hand);
+		// then let's populate the hand
 		updateGuiHand(hand);
-	}
-
-	private boolean arrayIsLegitRun(ArrayList<Card> tempCardArray) {
-		// declare an array of ints that we will put the ranks of the
-		// tempCardArray into
-		int size = tempCardArray.size();
-		ArrayList<Integer> suitOfTempCardArray = new ArrayList<Integer>(size);
-		ArrayList<Integer> rankOfTempCardArray = new ArrayList<Integer>(size);
-
-		/*
-		 * first, if the cards have different suits, then they can't be a run.
-		 * So we put the suits into an array and see if any are different. If
-		 * they are, then we can check "run" off the list.
-		 */
-		for (int i = 0; i < size; i++) {
-			Card card = tempCardArray.get(i);
-			int suit = card.getSuit();
-			suitOfTempCardArray.add(suit);
-		}
-		for (int i = 0; i < size - 1; i++) {
-			int suitA = suitOfTempCardArray.get(i);
-			int suitB = suitOfTempCardArray.get(i + 1);
-			if (suitA != suitB)
-				return true;
-		}
-
-		/*
-		 * Now that we've determined that all the suits are equal, we just need
-		 * to see if the ranks are consecutive. First, create the rank array.
-		 * Then, if each card's rank is one more than the one before it, it's a
-		 * run.
-		 */
-		for (int i = 0; i < size; i++) {
-			Card card = tempCardArray.get(i);
-			int rank = card.getRank();
-			rankOfTempCardArray.add(rank);
-		}
-		for (int i = 1; i < size; i++) {
-			int rankB = rankOfTempCardArray.get(i);
-			int rankA = rankOfTempCardArray.get(i - 1);
-			if (rankB != rankA + 1)
-				return true;
-		}
-
-		// the array MUST be a run
-		return true;
-	}
-
-	private ArrayList<Card> sortTempHand(ArrayList<Card> tempCardArray) {
-		int sizeMinusOne = tempCardArray.size() - 1;
-		boolean loop = true;
-		while (loop) {
-			loop = false;
-			for (int j = 0; j < sizeMinusOne; j++) {
-				Card cardA = tempCardArray.get(j);
-				Card cardB = tempCardArray.get(j + 1);
-				int rankA = cardA.getRank();
-				int rankB = cardB.getRank();
-				if (rankA > rankB) {
-					Collections.swap(tempCardArray, j, j + 1);
-					loop = true;
-				}
-			}
-		}
-		return tempCardArray;
-	}
-
-	private void invalidSizeForNewSet(int count) {
-		JOptionPane.showMessageDialog(this,
-				"I'm sorry, but you need to have more cards to\n"
-						+ "start a new set. " + count
-						+ " cards ain't gonna do it -- you\n"
-						+ "need at least three cards to start a new set.\n\n"
-						+ "Please try that again...");
-		stage2();
-	}
-
-	private void invalidEntry(int cardNumber) {
-		JOptionPane.showMessageDialog(this, "I'm sorry, but " + cardNumber
-				+ " is not between 1 and 8.\n\n" + "Please try that again...");
-		stage2();
-	}
-
-	private void giveErrorMessageStartStage2Over() {
-		JOptionPane.showMessageDialog(this,
-				"I'm sorry, but the cards you selected are not valid as a new set.\n\n"
-						+ "Please try that again...");
-		stage2();
-	}
-
-	/**
-	 * Questions the user: new or existing set?
-	 * 
-	 * @return boolean
-	 */
-	private boolean userChoiceIsNewSet() {
-		// create the "choice" objects that the user picks from
-		Object[] options = { "New Set", "Existing Set" };
-
-		// window that asks the question "New or Existing set?"
-		int n = JOptionPane.showOptionDialog(this,
-				"Are you starting a new set, or is this an existing set?",
-				"New Set or Existing Set?", JOptionPane.YES_NO_OPTION,
-				JOptionPane.QUESTION_MESSAGE, null, // the icon to use (we use
-													// none)
-				options, // the button titles
-				options[0]); // default button titles
-		if (0 != n)
-			return false;
-		return true;
-	}
-
-	/**
-	 * This is a simple stage. The user simply chooses a card from the deck to
-	 * discard.
-	 */
-	private void stage3() {
-
-		// this forces a particular tab to open --the "hand" tab
-		tabbedPane.setSelectedIndex(1);
-
-		JOptionPane.showMessageDialog(this,
-				"Select a card from your hand to discard");
-
-		card1Button.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent actionEvent) {
-				// add an action listener to each card in the hand
-
-				Card card = hand.get(0);
-				hand.remove(0);
-				card1Button.setIcon(faceDownCard);
-				Game.discardPile.putCardOnDiscardPile(card);
-				stage3RemoveActionListeners();
-				Game.updateGui(card);
-				Game.setNextPlayerTurn();
-				inStageOne = true;
-			}
-		});
-		card2Button.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent actionEvent) {
-				// add an action listener to each card in the hand
-
-				Card card = hand.get(1);
-				hand.remove(1);
-				card2Button.setIcon(faceDownCard);
-				Game.discardPile.putCardOnDiscardPile(card);
-				stage3RemoveActionListeners();
-				Game.updateGui(card);
-				Game.setNextPlayerTurn();
-				inStageOne = true;
-			}
-		});
-		card3Button.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent actionEvent) {
-				// add an action listener to each card in the hand
-
-				Card card = hand.get(2);
-				hand.remove(2);
-				card3Button.setIcon(faceDownCard);
-				Game.discardPile.putCardOnDiscardPile(card);
-				stage3RemoveActionListeners();
-				Game.updateGui(card);
-				Game.setNextPlayerTurn();
-				inStageOne = true;
-			}
-		});
-		card4Button.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent actionEvent) {
-				// add an action listener to each card in the hand
-
-				Card card = hand.get(3);
-				hand.remove(3);
-				card4Button.setIcon(faceDownCard);
-				Game.discardPile.putCardOnDiscardPile(card);
-				stage3RemoveActionListeners();
-				Game.updateGui(card);
-				Game.setNextPlayerTurn();
-				inStageOne = true;
-			}
-		});
-		card5Button.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent actionEvent) {
-				// add an action listener to each card in the hand
-
-				Card card = hand.get(4);
-				hand.remove(4);
-				card5Button.setIcon(faceDownCard);
-				Game.discardPile.putCardOnDiscardPile(card);
-				stage3RemoveActionListeners();
-				Game.updateGui(card);
-				Game.setNextPlayerTurn();
-				inStageOne = true;
-			}
-		});
-		card6Button.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent actionEvent) {
-				// add an action listener to each card in the hand
-
-				Card card = hand.get(5);
-				hand.remove(5);
-				card6Button.setIcon(faceDownCard);
-				Game.discardPile.putCardOnDiscardPile(card);
-				stage3RemoveActionListeners();
-				Game.updateGui(card);
-				Game.setNextPlayerTurn();
-				inStageOne = true;
-			}
-		});
-		card7Button.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent actionEvent) {
-				// add an action listener to each card in the hand
-
-				Card card = hand.get(6);
-				hand.remove(6);
-				card7Button.setIcon(faceDownCard);
-				Game.discardPile.putCardOnDiscardPile(card);
-				stage3RemoveActionListeners();
-				Game.updateGui(card);
-				Game.setNextPlayerTurn();
-				inStageOne = true;
-			}
-		});
-		card8Button.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent actionEvent) {
-				// add an action listener to each card in the hand
-
-				Card card = hand.get(7);
-				hand.remove(7);
-				card8Button.setIcon(faceDownCard);
-				Game.discardPile.putCardOnDiscardPile(card);
-				stage3RemoveActionListeners();
-				Game.updateGui(card);
-				Game.setNextPlayerTurn();
-				inStageOne = true;
-			}
-		});
-		if(hand.size()==0){
-			Game.endGame();
-		}
-	}
-
-	public void stage3RemoveActionListeners() {
-
-		for (ActionListener act : card1Button.getActionListeners())
-			card1Button.removeActionListener(act);
-		for (ActionListener act : card2Button.getActionListeners())
-			card2Button.removeActionListener(act);
-		for (ActionListener act : card3Button.getActionListeners())
-			card3Button.removeActionListener(act);
-		for (ActionListener act : card4Button.getActionListeners())
-			card4Button.removeActionListener(act);
-		for (ActionListener act : card5Button.getActionListeners())
-			card5Button.removeActionListener(act);
-		for (ActionListener act : card6Button.getActionListeners())
-			card6Button.removeActionListener(act);
-		for (ActionListener act : card7Button.getActionListeners())
-			card7Button.removeActionListener(act);
-		for (ActionListener act : card8Button.getActionListeners())
-			card8Button.removeActionListener(act);
 
 	}
-
-	/**
-	 * The user enters the cards that they would like to discard as a string
-	 * 
-	 * @return String
-	 */
-	private String userDiscards() {
-		String discardString = (String) JOptionPane.showInputDialog(this,
-				"Cards are numbered 1 through 8.\n\n"
-						+ "If you are laying down a new set,\n"
-						+ "use three cards.\n\n" + "Use the format \"# # #\".");
-		return discardString;
-	}
-
-	private void showStageOneMessage() {
-		JOptionPane.showMessageDialog(Player.this, "It is now your turn!\n\n"
-				+ "Please click on the deck to draw a card,\n"
-				+ "or click on the discard pile to draw the\n"
-				+ "last discarded card.", "Draw a Card",
-				JOptionPane.PLAIN_MESSAGE);
-
-	}
-
-	public boolean checkForEndOfGame() {
-		if (hand.size() == 0)
-			return true;
-		return false;
-	}
-
-	// this is the getter and setter for the player's hand
-	public ArrayList<Card> getHand() {
-		return hand;
-	}
-
-	public void setHand(ArrayList<Card> hand) {
-		this.hand = hand;
-	}
-
-	// this is the getter and setter for the player's ID
-	public int getPlayerID() {
-		return playerID;
-	}
-
-	public void setPlayerID(int playerID) {
-		this.playerID = playerID;
-	}
-
-	@Override
-	public void actionPerformed(ActionEvent actionEvent) {
-
-	}
-
 }
+

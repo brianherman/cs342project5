@@ -131,12 +131,18 @@ public class Client extends JFrame{
 				Vector<String> recipiants = new Vector<String>();
 				recipiants.add("Server");
 				send(new Envelope(name, "Announce.", recipiants));
-				send(game);
+//				send(game);
+//				cs342project5.GameState gs = new cs342project5.GameState(getId(), Game.deck, Game.discardPile, Game.player1.arrayOfLaidDownSets, getPlayerID());
+//				gameState = gs;
+//				send(gameState);
+
 			}
 			if(startGame == e.getSource())
 			{
 				rummy.startGame();
-				cs342project5.GameState gs = new cs342project5.GameState(getId(), Game.deck, Game.discardPile, Game.player1.arrayOfLaidDownSets, getPlayerID());
+				if(Game.deck== null)
+					System.err.println("DECK NULL");
+				cs342project5.GameState gs = new cs342project5.GameState(getId(), Game.deck, Game.discardPile, Game.player1.laydownArray, getPlayerID());
 				gameState = gs;
 				send(gameState);
 
@@ -160,7 +166,7 @@ public class Client extends JFrame{
 					recipiants.add("Server");
 					send(new Envelope(name, "JoinGame. "+ s  , recipiants));
 				}
-				
+				if(gameState!= null)
 				rummy.joinGame(gameState);
 			}
 			/*
@@ -312,7 +318,6 @@ public class Client extends JFrame{
 		@Override
 		public void run() {
 			Envelope e = null;
-			Game g = null;
 			try {
 				Object o = null;
 				/*
@@ -322,10 +327,10 @@ public class Client extends JFrame{
 				{ 
 				if(o instanceof GameState){
 					gameState = (GameState)o;
-					chat.append("gamestate recieved");
+					chat.append("gamestate recieved \n");
 				}else if(o instanceof cs342project5.Game){
 					game = (cs342project5.Game) o;
-					chat.append("game recieved");
+					chat.append("game recieved \n");
 				}else if(o instanceof Envelope){
 						e = (Envelope) o;
 						//Special server message that adds to the user list.
