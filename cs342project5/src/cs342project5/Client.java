@@ -36,7 +36,7 @@ public class Client extends JFrame{
 	private GameState gameState;
 	private String name;
 	private int playerID;
-	
+
 	public Client(){
 		super("Client");
 		setLayout(new BorderLayout());
@@ -45,7 +45,7 @@ public class Client extends JFrame{
 		Users.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
 		Users.setLayoutOrientation(JList.VERTICAL);
 		Users.setVisibleRowCount(-1);
-		
+
 		JScrollPane listScroller = new JScrollPane(Users);
 		listScroller.setPreferredSize(new Dimension(80, 80));
 		chat = new JTextArea();
@@ -56,7 +56,7 @@ public class Client extends JFrame{
 		message = new JTextField();
 		ClientActionListener CAL = new ClientActionListener();
 		message.addActionListener(CAL);
-		
+
 		menuBar = new JMenuBar();
 		file = new JMenu("File");
 		connect = new JMenuItem("Connect");
@@ -68,14 +68,14 @@ public class Client extends JFrame{
 		gameMenu = new JMenu("Game");
 		joinGame = new JMenuItem("Join Game");
 		newGame = new JMenuItem("New Game");
-		
+
 		startGame.addActionListener(CAL);
 		leave.addActionListener(CAL);
 		connect.addActionListener(CAL);
 		quit.addActionListener(CAL);
 		joinGame.addActionListener(CAL);
 		newGame.addActionListener(CAL);
-		
+
 		file.add(connect);
 		file.add(leave);
 		file.add(quit);
@@ -84,12 +84,12 @@ public class Client extends JFrame{
 		gameMenu.add(startGame);
 		gameMenu.add(joinGame);
 
-		
+
 		menuBar.add(file);
 		menuBar.add(gameMenu);
-		
+
 		setJMenuBar(menuBar);
-		
+
 		add(textScroller, BorderLayout.CENTER);
 		add(listScroller,BorderLayout.EAST);
 		add(message, BorderLayout.SOUTH);
@@ -98,7 +98,7 @@ public class Client extends JFrame{
 		setVisible(true);
 	}
 	public int getId(){
-		return game.id();
+		return playerID;
 	}
 	public void setGame(rummy.Game g){
 		System.out.println("setgame called");
@@ -131,10 +131,11 @@ public class Client extends JFrame{
 				Vector<String> recipiants = new Vector<String>();
 				recipiants.add("Server");
 				send(new Envelope(name, "Announce.", recipiants));
-//				send(game);
-//				cs342project5.GameState gs = new cs342project5.GameState(getId(), Game.deck, Game.discardPile, Game.player1.arrayOfLaidDownSets, getPlayerID());
-//				gameState = gs;
-//				send(gameState);
+				//				cs342project5.Game g = new Game(game);
+				//				send(game);
+				//				cs342project5.GameState gs = new cs342project5.GameState(getId(), Game.deck, Game.discardPile, Game.player1.arrayOfLaidDownSets, getPlayerID());
+				//				gameState = gs;
+				//				send(gameState);
 
 			}
 			if(startGame == e.getSource())
@@ -145,28 +146,12 @@ public class Client extends JFrame{
 				cs342project5.GameState gs = new cs342project5.GameState(getId(), Game.deck, Game.discardPile, Game.player1.laydownArray, getPlayerID());
 				gameState = gs;
 				send(gameState);
-
 			}
 			if(joinGame == e.getSource()){
-				String s = (String)JOptionPane.showInputDialog(
-				                    null,
-				                    "Enter the game you want to join.",
-				                    "Join Game",
-				                    JOptionPane.PLAIN_MESSAGE,
-				                    null,
-				                    null,
-				                    "0");
-				if(s == null)
-				{
-					return;
-				}
-				//If a string was returned, say so.
-				if ((s != null) && (s.length() > 0)) {
-					Vector<String> recipiants = new Vector<String>();
-					recipiants.add("Server");
-					send(new Envelope(name, "JoinGame. "+ s  , recipiants));
-				}
-				if(gameState!= null)
+
+				Vector<String> recipiants = new Vector<String>();
+				recipiants.add("Server");
+				send(new Envelope(name, "JoinGame. 0"  , recipiants));
 				rummy.joinGame(gameState);
 			}
 			/*
@@ -214,22 +199,22 @@ public class Client extends JFrame{
 		String ipAddress = (String)JOptionPane.showInputDialog(
 				null,
 				"Enter the server's ip address:\n",
-						"Customized Dialog",
-						JOptionPane.PLAIN_MESSAGE,
-						null,
-						null,
-						"127.0.0.1");
+				"Customized Dialog",
+				JOptionPane.PLAIN_MESSAGE,
+				null,
+				null,
+				"127.0.0.1");
 		if(ipAddress == null)
 			return;
 		//Get the name of the user.
 		name = (String)JOptionPane.showInputDialog(
 				null,
 				"Enter the username you wish to use:\n",
-						"Customized Dialog",
-						JOptionPane.PLAIN_MESSAGE,
-						null,
-						null,
-						"brian");
+				"Customized Dialog",
+				JOptionPane.PLAIN_MESSAGE,
+				null,
+				null,
+				"brian");
 		if(name == null)
 			return;
 		try{
@@ -325,13 +310,13 @@ public class Client extends JFrame{
 				 */
 				while((o=in.readObject()) != null)
 				{ 
-				if(o instanceof GameState){
-					gameState = (GameState)o;
-					chat.append("gamestate recieved \n");
-				}else if(o instanceof cs342project5.Game){
-					game = (cs342project5.Game) o;
-					chat.append("game recieved \n");
-				}else if(o instanceof Envelope){
+					if(o instanceof GameState){
+						gameState = (GameState)o;
+						chat.append("gamestate recieved \n");
+					}else if(o instanceof cs342project5.Game){
+						game = (cs342project5.Game) o;
+						chat.append("game recieved \n");
+					}else if(o instanceof Envelope){
 						e = (Envelope) o;
 						//Special server message that adds to the user list.
 						if(e.sender().equals("Server") && e.message().equals("Join."))
@@ -345,6 +330,14 @@ public class Client extends JFrame{
 						{
 							System.out.println(e.sender() + "left.");
 							usersModel.removeElement(e.sender());
+						}
+						if(e.message().startsWith("JoinGame"))
+						{
+							String getNumber[] = e.message().split(" ");
+							System.out.println(getNumber[0]);
+							System.out.println(getNumber[1]);
+							
+							playerID=Integer.parseInt(getNumber[1]);
 						}
 						//Print out the message.
 						chat.setText(chat.getText() + e.sender() + ": "+ e.message() +"\n");

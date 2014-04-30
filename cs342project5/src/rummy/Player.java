@@ -17,7 +17,7 @@ import java.util.Collections;
  * screen to our liking. Like this:
  * 
  */
-public class Player extends JFrame implements ActionListener, java.io.Serializable{
+public class Player extends JFrame implements java.io.Serializable{
 	// the array of cards that is the player's hand
 	private ArrayList<Card> hand;
 	private TableButton[][] buttons = new TableButton[10][13];
@@ -67,6 +67,7 @@ public class Player extends JFrame implements ActionListener, java.io.Serializab
 		card3Button.setEnabled(false);
 		card4Button.setEnabled(false);
 		card5Button.setEnabled(false);
+		card6Button.setEnabled(false);
 		card7Button.setEnabled(false);
 		card8Button.setEnabled(false);
 	}
@@ -78,6 +79,7 @@ public class Player extends JFrame implements ActionListener, java.io.Serializab
 		card3Button.setEnabled(true);
 		card4Button.setEnabled(true);
 		card5Button.setEnabled(true);
+		card6Button.setEnabled(true);
 		card7Button.setEnabled(true);
 		card8Button.setEnabled(true);
 	}
@@ -458,127 +460,140 @@ public class Player extends JFrame implements ActionListener, java.io.Serializab
 
 	}
 
-	public void stage3() {
-		JOptionPane.showMessageDialog(this,
-				"Select a card from your hand to discard");
+    /**
+     * This is a simple stage. The user simply chooses a card from the deck to
+     * discard.
+     */
+    private void stage3() {
 
-		
-		
-		card1Button.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent actionEvent) {
-				// add an action listener to each card in the hand
-				finished=true;
-				Card card = hand.get(0);
-				hand.remove(0);
-				card1Button.setIcon(faceDownCard);
-				Game.discardPile.putCardOnDiscardPile(card);
-				stage3RemoveActionListeners();
-				Game.updateGui(card);
-				
-			}
-		});
-		card2Button.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent actionEvent) {
-				// add an action listener to each card in the hand
-				finished=true;
-				Card card = hand.get(1);
-				hand.remove(1);
-				card2Button.setIcon(faceDownCard);
-				Game.discardPile.putCardOnDiscardPile(card);
-				stage3RemoveActionListeners();
-				Game.updateGui(card);
-				
-			}
-		});
-		card3Button.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent actionEvent) {
-				// add an action listener to each card in the hand
-				finished=true;
-				Card card = hand.get(2);
-				hand.remove(2);
-				card3Button.setIcon(faceDownCard);
-				Game.discardPile.putCardOnDiscardPile(card);
-				stage3RemoveActionListeners();
-				Game.updateGui(card);
-				
-			}
-		});
-		card4Button.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent actionEvent) {
-				// add an action listener to each card in the hand
-				finished=true;
-				Card card = hand.get(3);
-				hand.remove(3);
-				card4Button.setIcon(faceDownCard);
-				Game.discardPile.putCardOnDiscardPile(card);
-				stage3RemoveActionListeners();
-				Game.updateGui(card);
-				
-			}
-		});
-		card5Button.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent actionEvent) {
-				// add an action listener to each card in the hand
-				finished=true;
-				Card card = hand.get(4);
-				hand.remove(4);
-				card5Button.setIcon(faceDownCard);
-				Game.discardPile.putCardOnDiscardPile(card);
-				stage3RemoveActionListeners();
-				Game.updateGui(card);
-				
-			}
-		});
-		card6Button.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent actionEvent) {
-				// add an action listener to each card in the hand
-				finished=true;
-				Card card = hand.get(5);
-				hand.remove(5);
-				card6Button.setIcon(faceDownCard);
-				Game.discardPile.putCardOnDiscardPile(card);
-				stage3RemoveActionListeners();
-				Game.updateGui(card);
-				
-			}
-		});
-		card7Button.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent actionEvent) {
-				// add an action listener to each card in the hand
-				finished=true;
-				Card card = hand.get(6);
-				hand.remove(6);
-				card7Button.setIcon(faceDownCard);
-				Game.discardPile.putCardOnDiscardPile(card);
-				stage3RemoveActionListeners();
-				Game.updateGui(card);
-				
-			}
-		});
-		card8Button.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent actionEvent) {
-				// add an action listener to each card in the hand
-				finished=true;
-				Card card = hand.get(7);
-				hand.remove(7);
-				card8Button.setIcon(faceDownCard);
-				Game.discardPile.putCardOnDiscardPile(card);
-				stage3RemoveActionListeners();
-				Game.updateGui(card);
-				
-			}
-		});
-		
-		
-	}
+        // this forces a particular tab to open --the "hand" tab
+        tabbedPane.setSelectedIndex(1);
+
+        JOptionPane.showMessageDialog(this,
+                "Select a card from your hand to discard");
+
+        card1Button.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                // add an action listener to each card in the hand
+
+                Card card = hand.get(0);
+                hand.remove(0);
+                card1Button.setIcon(faceDownCard);
+                Game.discardPile.putCardOnDiscardPile(card);
+                stage3RemoveActionListeners();
+                Game.updateGui(card);
+                Game.setNextPlayerTurn();
+                inStageOne = true;
+            }
+        });
+        card2Button.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                // add an action listener to each card in the hand
+
+                Card card = hand.get(1);
+                hand.remove(1);
+                card2Button.setIcon(faceDownCard);
+                Game.discardPile.putCardOnDiscardPile(card);
+                stage3RemoveActionListeners();
+                Game.updateGui(card);
+                Game.setNextPlayerTurn();
+                inStageOne = true;
+            }
+        });
+        card3Button.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                // add an action listener to each card in the hand
+
+                Card card = hand.get(2);
+                hand.remove(2);
+                card3Button.setIcon(faceDownCard);
+                Game.discardPile.putCardOnDiscardPile(card);
+                stage3RemoveActionListeners();
+                Game.updateGui(card);
+                Game.setNextPlayerTurn();
+                inStageOne = true;
+            }
+        });
+        card4Button.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                // add an action listener to each card in the hand
+
+                Card card = hand.get(3);
+                hand.remove(3);
+                card4Button.setIcon(faceDownCard);
+                Game.discardPile.putCardOnDiscardPile(card);
+                stage3RemoveActionListeners();
+                Game.updateGui(card);
+                Game.setNextPlayerTurn();
+                inStageOne = true;
+            }
+        });
+        card5Button.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                // add an action listener to each card in the hand
+
+                Card card = hand.get(4);
+                hand.remove(4);
+                card5Button.setIcon(faceDownCard);
+                Game.discardPile.putCardOnDiscardPile(card);
+                stage3RemoveActionListeners();
+                Game.updateGui(card);
+                Game.setNextPlayerTurn();
+                inStageOne = true;
+            }
+        });
+        card6Button.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                // add an action listener to each card in the hand
+
+                Card card = hand.get(5);
+                hand.remove(5);
+                card6Button.setIcon(faceDownCard);
+                Game.discardPile.putCardOnDiscardPile(card);
+                stage3RemoveActionListeners();
+                Game.updateGui(card);
+                Game.setNextPlayerTurn();
+                inStageOne = true;
+            }
+        });
+        card7Button.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                // add an action listener to each card in the hand
+
+                Card card = hand.get(6);
+                hand.remove(6);
+                card7Button.setIcon(faceDownCard);
+                Game.discardPile.putCardOnDiscardPile(card);
+                stage3RemoveActionListeners();
+                Game.updateGui(card);
+                Game.setNextPlayerTurn();
+                inStageOne = true;
+            }
+        });
+        card8Button.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                // add an action listener to each card in the hand
+
+                Card card = hand.remove(7);
+
+                card8Button.setIcon(faceDownCard);
+                Game.discardPile.putCardOnDiscardPile(card);
+                stage3RemoveActionListeners();
+                Game.updateGui(card);
+                Game.setNextPlayerTurn();
+                inStageOne = true;
+            }
+        });
+
+    }
 
 	private void showStageOneMessage() {
 		JOptionPane
@@ -608,13 +623,10 @@ public class Player extends JFrame implements ActionListener, java.io.Serializab
 	}
 
 	public void setPlayerID(int playerID) {
+		this.setTitle(""+playerID);
 		this.playerID = playerID;
 	}
 
-	@Override
-	public void actionPerformed(ActionEvent actionEvent) {
-
-	}
 
 	// returns 0 if not legal, 1 if a n of a kind, 2 if a run
 	// assumes the set is sorted
@@ -775,8 +787,7 @@ public class Player extends JFrame implements ActionListener, java.io.Serializab
 		discardPileButton.setIcon(discardCard);
 
 		// then let's populate the hand
-		updateGuiHand(hand);
-
+		//updateGuiHand(hand);
 	}
 }
 

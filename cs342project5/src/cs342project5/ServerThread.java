@@ -81,18 +81,15 @@ public class ServerThread implements Runnable {
 									Vector<Game> games = callback.getGame();
 									Vector<GameState> gameStates = callback.getGameStates();
 
-									callback.log(" " + games.size());
+									callback.log("sending game " + games.size() + "\n");
 
 									for(Game ga : games){
-										if( ga.id()==Integer.parseInt(getNumber[1]))
-										{
 											callback.log("sending game info");
-											id=Integer.parseInt(getNumber[1]);
+//											id=Integer.parseInt(getNumber[1]);
 											ga.addPlayer(new Player(name));
-											m = new Envelope("Server", "Successful Join. " + getNumber[1],callback.getUsers());
+											m = new Envelope("Server", "JoinGame "+games.size(),callback.getUsers());
 											callback.send(ga);
 											//callback.send(gsa);
-										}
 									}
 								}
 					}else{

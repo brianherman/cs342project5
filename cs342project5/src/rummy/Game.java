@@ -22,8 +22,8 @@ public class Game implements java.io.Serializable
 	public static Player player2;
 	public static Player player3;
 	public static Player player4;
-	static int playerTurn = 1;
-	static int numPlayers = 4;
+	public static int playerTurn = 1;
+	static int numPlayers = 1;
 	private static Client client;
 	public Game(cs342project5.Client g){
 		client = g;
@@ -32,6 +32,7 @@ public class Game implements java.io.Serializable
 		int whichPlayerToUpdate = client.getPlayerID();
 		if(whichPlayerToUpdate==1){
 			player1.laydownArray = gs.getArrayOfLaidDownSets();
+			player1.unlock();
 		}else if(whichPlayerToUpdate==2){
 			player2.laydownArray = gs.getArrayOfLaidDownSets();
 		}else if(whichPlayerToUpdate==3){
@@ -46,9 +47,7 @@ public class Game implements java.io.Serializable
 	{
 		int whichPlayerToUpdate = client.getPlayerID();
 		
-		
 		discardPile = gs.getDiscardPile();
-		
 		deck = gs.getDeck();
 
 		declarePlayers();
@@ -71,14 +70,19 @@ public class Game implements java.io.Serializable
 					else if (1 == whichPlayerToUpdate) player2.populateGui(discard);
 					else if (2 == whichPlayerToUpdate) player3.populateGui(discard);
 					else             player4.populateGui(discard);
-		if(whichPlayerToUpdate==0)
+		if(whichPlayerToUpdate==0){
 			player1.playerTurn();
-		else if(whichPlayerToUpdate==1)
+			player1.lock();
+		}else if(whichPlayerToUpdate==1){
 			player2.playerTurn();
-		else if(whichPlayerToUpdate==2)
+			player1.lock();
+		}else if(whichPlayerToUpdate==2){
 			player3.playerTurn();
-		else if(whichPlayerToUpdate==3)
+			player3.lock();
+		}else if(whichPlayerToUpdate==3){
 			player4.playerTurn();
+			player4.lock();
+		}
 	}
 	/*
 	 * stage1
@@ -134,7 +138,7 @@ public class Game implements java.io.Serializable
 	/**
 	 * Sorts the hands into rank order
 	 */
-	private static void sortHandsSmallToLarge()
+	private void sortHandsSmallToLarge()
 	{
 		for (int i = 0; i < numPlayers; i++)
 		{
@@ -147,7 +151,7 @@ public class Game implements java.io.Serializable
 	/**
 	 * Sorts the hands into rank order
 	 */
-	private static void sortHandsSmallToLarge(int which)
+	private void sortHandsSmallToLarge(int which)
 	{
 		
 			if      (0 == which) player1.sortHand();
@@ -181,20 +185,22 @@ public class Game implements java.io.Serializable
 		}
 	}
 
-	private static void declarePlayers()
+	private void declarePlayers()
 	{
 		int whoAmI = client.getPlayerID();
 		if (1 == numPlayers)
 		{
 			if(whoAmI==0)
 				player1 = new Player(client, true);
-			else
+			else{
 				player1 = new Player(client, false);
+				player1.lock();
+			}
 			player1.setPlayerID(1);
 		}
 		else if (2 == numPlayers)
 		{
-			if(whoAmI==0)
+			if(whoAmI>=0)
 				player1 = new Player(client, true);
 			else
 				player1 = new Player(client, false);
@@ -272,7 +278,7 @@ public class Game implements java.io.Serializable
 
 
 	}
-	
+
 	/**
 	 * The physical act of dealing the cards.  This is also where we declare the
 	 * players, as this is the first time that we see them.
@@ -328,6 +334,7 @@ public class Game implements java.io.Serializable
 			player1.playerTurn();
 			cs342project5.GameState gs = new cs342project5.GameState(client.getId(), deck, discardPile, player1.laydownArray, client.getPlayerID());
 			client.send(gs);
+			
 			gameOver = player1.checkForEndOfGame();
 			player1.lock();
 		}
