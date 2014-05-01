@@ -10,7 +10,8 @@ public class Server extends JFrame implements ServerThreadIterface{
 	private static Vector<ServerThread> threads = new Vector<ServerThread>();
 	private JTextArea lta;
 	private Vector<Game> games = new Vector<Game>();
-	private Vector<GameState> gameStates = new Vector<GameState>();
+	private GameState gameStates =null;
+	private int turn = 0;
 	/**
 	 * GUI for the server.
 	 */
@@ -62,6 +63,17 @@ public class Server extends JFrame implements ServerThreadIterface{
 			}
 		}
 
+	}
+	public int getTurn(){
+		return turn;
+	}
+	public void setTurn(int i){
+		if(turn > 3)
+		{
+			turn = 0;
+		}else{
+			turn=i;
+		}
 	}
 	/** 
 	 * Returns a list of users retrieved from the thread Arraylist.
@@ -138,11 +150,11 @@ public class Server extends JFrame implements ServerThreadIterface{
 		games.add(g);
 	}
 	@Override
-	public void addGameState(GameState g) {
-		gameStates.add(g);
+	public void setGameState(GameState g) {
+		gameStates = g;
 	}
 	@Override
-	public Vector<GameState> getGameStates() {
+	public GameState getGameStates() {
 		return gameStates;
 	}
 }

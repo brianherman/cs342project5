@@ -143,7 +143,7 @@ public class Client extends JFrame{
 				rummy.startGame();
 				if(Game.deck== null)
 					System.err.println("DECK NULL");
-				cs342project5.GameState gs = new cs342project5.GameState(getId(), Game.deck, Game.discardPile, Game.player1.laydownArray, getPlayerID(), false);
+				cs342project5.GameState gs = new cs342project5.GameState(getId(), Game.deck, Game.discardPile, Game.player1.laydownArray, getPlayerID(), false, 0);
 				gameState = gs;
 				send(gameState);
 			}
@@ -351,12 +351,12 @@ public class Client extends JFrame{
 							playerID=Integer.parseInt(getNumber[1]);
 						}
 						if(e.message().equals("Unlock")){
-							rummy.player1.unlock();
+							Game.player1.unlock();
 							rummy.update(gameState);
 							continue;
 						}
 						if(e.message().equals("Lock")){
-							rummy.player1.lock();
+							Game.player1.lock();
 							rummy.update(gameState);
 							continue;
 						}

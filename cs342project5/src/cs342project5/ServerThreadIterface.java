@@ -14,8 +14,10 @@ public interface ServerThreadIterface {
 	public Vector<String> getUsers();
 	public Vector<Game> getGame();
 	public void addGame(Game g);
-	public void addGameState(GameState g);
+	public void setGameState(GameState g);
 	public void remove(String user);
 	public void log(String log);
-	Vector<GameState> getGameStates();
+	public GameState getGameStates();
+	public void setTurn(int turn);
+	public int getTurn();
 }

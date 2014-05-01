@@ -72,15 +72,15 @@ public class ServerThread implements Runnable {
 								callback.addGame(game2Add);
 								callback.send(game2Add);
 
-								callback.addGameState(gs);
+								callback.setGameState(gs);
 								//callback.send(gs);
 							}else
 								if(m.sender() != null && m.message().startsWith("JoinGame.")){
 									String getNumber[] = m.message().split(" ");
 									//callback.log(getNumber[1]);
 									Vector<Game> games = callback.getGame();
-									Vector<GameState> gameStates = callback.getGameStates();
-
+									GameState gameStates = callback.getGameStates();
+									gs = gameStates;
 									callback.log("sending game " + games.size() + "\n");
 
 									for(Game ga : games){
@@ -99,8 +99,10 @@ public class ServerThread implements Runnable {
 					}
 
 				}
-				if(gs != null)
+				if(gs != null){
+					callback.setTurn(gs.turn());
 					callback.send(gs);
+				}
 			}
 
 		} catch (IOException e) {

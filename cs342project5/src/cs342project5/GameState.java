@@ -2,6 +2,7 @@ package cs342project5;
 
 import java.util.ArrayList;
 
+import rummy.Card;
 import rummy.Deck;
 import rummy.DiscardPile;
 import rummy.Game;
@@ -15,7 +16,11 @@ public class GameState implements java.io.Serializable{
 	private int id;
 	private int whichPlayer;
 	private boolean unlockNextPlayer;
-
+	private int turn;
+	private Card discard;
+	public Card discard(){
+		return discard;
+	}
 	public rummy.DiscardPile getDiscardPile() {
 		return discardPile;
 	}
@@ -31,13 +36,17 @@ public class GameState implements java.io.Serializable{
 	public int whichPlayer(){
 		return whichPlayer;
 	}
-	public GameState(int i, rummy.Deck d, rummy.DiscardPile dp, ArrayList<rummy.Laydowns> lds, int w, boolean unp){
+	public int turn(){
+		return turn;
+	}
+	public GameState(int i, rummy.Deck d, rummy.DiscardPile dp, ArrayList<rummy.Laydowns> lds, int w, boolean unp, int t){
 		id=i;
 		deck=d;
 		discardPile=dp;
 		arrayOfLaidDownSets=lds;
 		whichPlayer = w;
 		unlockNextPlayer=unp;
+		turn = t;
 	}
 
 }

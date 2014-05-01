@@ -29,28 +29,31 @@ public class Game implements java.io.Serializable
 	}
 	public void update(GameState gs){
 		int whichPlayerToUpdate = client.getPlayerID();
-		if(whichPlayerToUpdate==0){
+		//if(whichPlayerToUpdate==0){
 			player1.laydownArray = gs.getArrayOfLaidDownSets();
-		}else if(whichPlayerToUpdate==1){
-			player2.laydownArray = gs.getArrayOfLaidDownSets();
-		}else if(whichPlayerToUpdate==2){
-			player3.laydownArray = gs.getArrayOfLaidDownSets();
-		}else if(whichPlayerToUpdate==3){
-			player4.laydownArray = gs.getArrayOfLaidDownSets();
-		}
-
 		discardPile = gs.getDiscardPile();
 		deck = gs.getDeck();
+		player1.discardPile = gs.getDiscardPile();
+
+		Card discard = discardPile.getCurrentDiscardCard();
+		player1.populateGui(discard);
+		player1.updateGuiHand(player1.getHand());
+
+		
+		player1.setPlayerID(client.getPlayerID());
+	//	player1.playerTurn();
 	}
 	public void joinGame(GameState gs)
 	{
 		int whichPlayerToUpdate = client.getPlayerID();
 
 		discardPile = gs.getDiscardPile();
+		
 		deck = gs.getDeck();
 		declarePlayers();
 		player1.lock();
-
+		player1.laydownArray = gs.getArrayOfLaidDownSets();
+		player1.discardPile = gs.getDiscardPile();
 		if(whichPlayerToUpdate==0){
 			player1.laydownArray = gs.getArrayOfLaidDownSets();
 		}else if(whichPlayerToUpdate==1){
@@ -61,17 +64,27 @@ public class Game implements java.io.Serializable
 			player4.laydownArray = gs.getArrayOfLaidDownSets();
 		}
 		dealTheCards(whichPlayerToUpdate);
-		sortHandsSmallToLarge(whichPlayerToUpdate);
+//		addFirstCardToDiscardPile(); // done once per game, unless we run out of cards
+	//	sortHandsSmallToLarge(whichPlayerToUpdate);
 		//displayHandASCII();
 
 		// we're gonna need to send some variables along with the methods. The discard and the table
-		Card discard = discardPile.getCurrentDiscardCard();
-		if      (0 == whichPlayerToUpdate) player1.populateGui(discard);
-		else if (1 == whichPlayerToUpdate) player2.populateGui(discard);
-		else if (2 == whichPlayerToUpdate) player3.populateGui(discard);
-		else             player4.populateGui(discard);
+		
+		Card discard1 = discardPile.getCurrentDiscardCard();
+		discardPile.displayDiscardPile();
+		player1.populateGui(discard1);
+		player1.updateGuiHand(player1.getHand());
+
 		player1.setPlayerID(client.getPlayerID());
+		
 		player1.playerTurn();
+		discardPile.displayDiscardPile();
+
+		Card discard2 = discardPile.getCurrentDiscardCard();
+		player1.populateGui(discard2);
+		player1.updateGuiHand(player1.getHand());
+
+
 	}
 	/*
 	 * stage1
@@ -96,25 +109,26 @@ public class Game implements java.io.Serializable
 		// deal the cards
 		declarePlayers();
 		dealTheCards();
-		sortHandsSmallToLarge();
+		//sortHandsSmallToLarge();
 		//        displayHandASCII();
 
 
 		// update the GUI
-		for (int i = 0; i < numPlayers; i++)
-		{
-			// we're gonna need to send some variables along with the methods. The discard and the table
-			Card discard = discardPile.getCurrentDiscardCard();
-			if      (0 == i) player1.populateGui(discard);
-			else if (1 == i) player2.populateGui(discard);
-			else if (2 == i) player3.populateGui(discard);
-			else             player4.populateGui(discard);
-		}
+		Card discard1 = discardPile.getCurrentDiscardCard();
+		player1.populateGui(discard1);
+		player1.setPlayerID(client.getPlayerID());
 
-		cs342project5.GameState gs2 = new cs342project5.GameState(client.getId(), deck, discardPile, player1.laydownArray, client.getPlayerID(), true);
+		cs342project5.GameState gs2 = new cs342project5.GameState(client.getId(), deck, discardPile, player1.laydownArray, client.getPlayerID(), true, 0);
 		client.send(gs2);
 		//starts player 1s turn, he will start player 2s turn and so on
 		player1.playerTurn();
+		//player1.lock();
+		discardPile.displayDiscardPile();
+		cs342project5.GameState gs3 = new cs342project5.GameState(client.getId(), deck, discardPile, player1.laydownArray, client.getPlayerID(), true, 0);
+		client.send(gs3);
+		// update the GUI
+		Card discard2 = discardPile.getCurrentDiscardCard();
+		player1.populateGui(discard2);
 	}
 
 	public static void endGame()
@@ -127,27 +141,27 @@ public class Game implements java.io.Serializable
 	/**
 	 * Sorts the hands into rank order
 	 */
-	private void sortHandsSmallToLarge()
-	{
-		for (int i = 0; i < numPlayers; i++)
-		{
-			if      (0 == i) player1.sortHand();
-			else if (1 == i) player2.sortHand();
-			else if (2 == i) player3.sortHand();
-			else             player4.sortHand();
-		}
-	}
-	/**
-	 * Sorts the hands into rank order
-	 */
-	private void sortHandsSmallToLarge(int which)
-	{
-
-		if      (0 == which) player1.sortHand();
-		else if (1 == which) player2.sortHand();
-		else if (2 == which) player3.sortHand();
-		else             player4.sortHand();
-	}
+//	private void sortHandsSmallToLarge()
+//	{
+//		for (int i = 0; i < numPlayers; i++)
+//		{
+//			if      (0 == i) player1.sortHand();
+//			else if (1 == i) player2.sortHand();
+//			else if (2 == i) player3.sortHand();
+//			else             player4.sortHand();
+//		}
+//	}
+//	/**
+//	 * Sorts the hands into rank order
+//	 */
+//	private void sortHandsSmallToLarge(int which)
+//	{
+//
+//		if      (0 == which) player1.sortHand();
+//		else if (1 == which) player2.sortHand();
+//		else if (2 == which) player3.sortHand();
+//		else             player4.sortHand();
+//	}
 
 	/**
 	 * Displays the cards in ASCII for debugging purposes
@@ -300,43 +314,47 @@ public class Game implements java.io.Serializable
 			tempArray.add(card);
 		}
 		// then we set that temp array to the proper player
-		if      (0 == which) player1.setHand(tempArray);
-		else if (1 == which) player2.setHand(tempArray);
-		else if (2 == which) player3.setHand(tempArray);
-		else             player4.setHand(tempArray);
+		//if      (0 == which) player1.setHand(tempArray);
+		player1.setHand(tempArray);
+//		else if (1 == which) player2.setHand(tempArray);
+//		else if (2 == which) player3.setHand(tempArray);
+//		else             player4.setHand(tempArray);
 
 	}
 	//sets the next players turn.  This is called in stage 3
 	public static void setNextPlayerTurn(){
 		boolean gameOver = false;
-		if (playerTurn==numPlayers)
-			playerTurn=1;
-		else 
-			playerTurn++;
+//		if (playerTurn==numPlayers)
+//			playerTurn=1;
+//		else
+//			playerTurn++;
 		System.out.println("Player turn is now: "+ playerTurn);
-
+		Card discard = discardPile.getCurrentDiscardCard();
+		player1.populateGui(discard);
 		if (playerTurn == 1)
 		{
 			player1.playerTurn();
-			cs342project5.GameState gs = new cs342project5.GameState(client.getId(), deck, discardPile, player1.laydownArray, client.getPlayerID(), true);
+			cs342project5.GameState gs = new cs342project5.GameState(client.getId(), deck, discardPile, player1.laydownArray, client.getPlayerID(), true, 0);
 			client.send(gs);
-			
 			client.send(new cs342project5.Envelope(client.getName(), "Unlock", client.getRecipiants()));
+			Card discard2 = discardPile.getCurrentDiscardCard();
+			player1.populateGui(discard2);
+			player1.updateGuiHand(player1.getHand());
 			gameOver = player1.checkForEndOfGame();
 			player1.lock();
 		}
 		else if (playerTurn == 2)
 		{
-			player2.playerTurn();
-			cs342project5.GameState gs = new cs342project5.GameState(client.getId(), deck, discardPile, player2.laydownArray, client.getPlayerID(), true);
+			//player2.playerTurn();
+			cs342project5.GameState gs = new cs342project5.GameState(client.getId(), deck, discardPile, player2.laydownArray, client.getPlayerID(), true,1);
 			client.send(gs);
 			gameOver = player2.checkForEndOfGame();
 			player2.lock();
 		}
 		else if (playerTurn == 3)
 		{
-			player3.playerTurn();
-			cs342project5.GameState gs = new cs342project5.GameState(client.getId(), deck, discardPile, player3.laydownArray, client.getPlayerID(), true);
+			//player3.playerTurn();
+			cs342project5.GameState gs = new cs342project5.GameState(client.getId(), deck, discardPile, player3.laydownArray, client.getPlayerID(), true,2);
 			client.send(gs);
 			gameOver = player3.checkForEndOfGame();
 			player3.lock();
@@ -344,7 +362,7 @@ public class Game implements java.io.Serializable
 		else
 		{
 			player4.playerTurn();
-			cs342project5.GameState gs = new cs342project5.GameState(client.getId(), deck, discardPile, player4.laydownArray, client.getPlayerID(), true);
+			cs342project5.GameState gs = new cs342project5.GameState(client.getId(), deck, discardPile, player4.laydownArray, client.getPlayerID(), true,3);
 			client.send(gs);
 			gameOver = player4.checkForEndOfGame();
 			player4.lock();
@@ -363,6 +381,4 @@ public class Game implements java.io.Serializable
 		Card card = deck.drawCardFromDeck();
 		discardPile.putCardOnDiscardPile(card);
 	}
-
-
 }

@@ -254,47 +254,47 @@ public class Player extends JFrame implements java.io.Serializable{
 	 * @return ArrayList<Card>
 	 */
 
-	public ArrayList<Card> sortAnyHand(ArrayList<Card> hand) {
-
-		int sizeMinusOne = hand.size() - 1;
-		boolean loop = true;
-		while (loop) {
-			loop = false;
-			for (int j = 0; j < sizeMinusOne; j++) {
-				Card cardA = hand.get(j);
-				Card cardB = hand.get(j + 1);
-				int rankA = cardA.getRank();
-				int rankB = cardB.getRank();
-				if (rankA > rankB) {
-					Collections.swap(hand, j, j + 1);
-					loop = true;
-				}
-			}
-		}
-		return hand;
-	}
-
-	public ArrayList<Card> sortHand() {
-		// bubble sort the hand into order as per the rank of the card
-		// there's no need to actually read this code - treat it as a black box
-		// that returns a sorted hand
-		int sizeMinusOne = hand.size() - 1;
-		boolean loop = true;
-		while (loop) {
-			loop = false;
-			for (int j = 0; j < sizeMinusOne; j++) {
-				Card cardA = hand.get(j);
-				Card cardB = hand.get(j + 1);
-				int rankA = cardA.getRank();
-				int rankB = cardB.getRank();
-				if (rankA > rankB) {
-					Collections.swap(hand, j, j + 1);
-					loop = true;
-				}
-			}
-		}
-		return hand;
-	}
+//	public ArrayList<Card> sortAnyHand(ArrayList<Card> hand) {
+//
+//		int sizeMinusOne = hand.size() - 1;
+//		boolean loop = true;
+//		while (loop) {
+//			loop = false;
+//			for (int j = 0; j < sizeMinusOne; j++) {
+//				Card cardA = hand.get(j);
+//				Card cardB = hand.get(j + 1);
+//				int rankA = cardA.getRank();
+//				int rankB = cardB.getRank();
+//				if (rankA > rankB) {
+//					Collections.swap(hand, j, j + 1);
+//					loop = true;
+//				}
+//			}
+//		}
+//		return hand;
+//	}
+//
+//	public ArrayList<Card> sortHand() {
+//		// bubble sort the hand into order as per the rank of the card
+//		// there's no need to actually read this code - treat it as a black box
+//		// that returns a sorted hand
+//		int sizeMinusOne = hand.size() - 1;
+//		boolean loop = true;
+//		while (loop) {
+//			loop = false;
+//			for (int j = 0; j < sizeMinusOne; j++) {
+//				Card cardA = hand.get(j);
+//				Card cardB = hand.get(j + 1);
+//				int rankA = cardA.getRank();
+//				int rankB = cardB.getRank();
+//				if (rankA > rankB) {
+//					Collections.swap(hand, j, j + 1);
+//					loop = true;
+//				}
+//			}
+//		}
+//		return hand;
+//	}
 
 	/**
 	 * This method will drive us through an entire player's turn. We will
@@ -412,7 +412,7 @@ public class Player extends JFrame implements java.io.Serializable{
 						// adds the card from the hand to the set to be
 						// layeddown
 						set.add(hand.get(Character.getNumericValue(s.charAt(i)-1)));
-				set = sortAnyHand(set);
+				//set = sortAnyHand(set);
 				int setResult = isLegalNewSet(set);
 
 				if (setResult == 0){
