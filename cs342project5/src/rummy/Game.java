@@ -28,12 +28,16 @@ public class Game implements java.io.Serializable
 		client = g;
 	}
 	public void update(GameState gs){
+		if(player1==null)
+			return;
 		int whichPlayerToUpdate = client.getPlayerID();
 		//if(whichPlayerToUpdate==0){
+		if(player1 != null)
 			player1.laydownArray = gs.getArrayOfLaidDownSets();
 		discardPile = gs.getDiscardPile();
 		deck = gs.getDeck();
-		player1.discardPile = gs.getDiscardPile();
+		if(player1 != null)
+			player1.discardPile = gs.getDiscardPile();
 
 		Card discard = discardPile.getCurrentDiscardCard();
 		player1.populateGui(discard);

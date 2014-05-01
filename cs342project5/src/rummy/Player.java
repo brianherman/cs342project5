@@ -142,7 +142,7 @@ public class Player extends JFrame implements java.io.Serializable{
 
 	private void createTableTab() {
 		// set the layout (notice that it's ROW, COLUMN for the argument)
-		tableView.setLayout(new GridLayout(10, 13));
+		tableView.setLayout(new GridLayout(4, 13));
 
 		// create each button
 		for (int row = 0; row < 10; row++){
@@ -422,13 +422,16 @@ public class Player extends JFrame implements java.io.Serializable{
 				}
 				else if (setResult == 1){
 					laydownArray.add(new Laydowns(set, false));
+					System.out.println("you are here! size of first set array is: " + set.size());
 					removeCardsAfterLaydown(s);
+					updateLaydownTable(new Laydowns(set, false));
 					updateGui(Game.discardPile.getCurrentDiscardCard());
 					stage3();
 				}
 				else if (setResult == 2){
 					laydownArray.add(new Laydowns(set, true));
 					removeCardsAfterLaydown(s);
+					updateLaydownTable(new Laydowns(set, true));
 					updateGui(Game.discardPile.getCurrentDiscardCard());
 					stage3();
 				}
@@ -724,7 +727,23 @@ public class Player extends JFrame implements java.io.Serializable{
 				hand.remove(Character.getNumericValue(s.charAt(i)-1-count));
 				count++;
 			}
+		
 	}
+	
+	public void updateLaydownTable(Laydowns laydown){
+		ArrayList<Card> cardArray = new ArrayList<Card>();
+		cardArray=laydown.getLaydown();
+		for (int i=0; i<cardArray.size(); i++){
+			Card card = cardArray.get(i);
+			System.out.println("adding card "+ card.getCardString());
+			ImageIcon newImage = new ImageIcon(card.getCardString());
+			buttons[card.getSuit()-1][card.getRank()-1].setIcon(newImage);
+		}
+		cs342project5.GameState gs2 = new cs342project5.GameState(client.getId(), Game.deck, discardPile, Game.player1.laydownArray, client.getPlayerID(), true, 0, discardPile.getCurrentDiscardCard());
+		client.send(gs2);
+
+	}
+	
 	public boolean checkForEndOfGame(){
 		return finished;
 	}

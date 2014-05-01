@@ -323,6 +323,7 @@ public class Client extends JFrame{
 				{ 
 					if(o instanceof GameState){
 						gameState = (GameState)o;
+						rummy.update(gameState);
 						chat.append("gamestate recieved \n");
 					}else if(o instanceof cs342project5.Game){
 						game = (cs342project5.Game) o;
