@@ -145,7 +145,7 @@ public class Player extends JFrame implements java.io.Serializable{
 		tableView.setLayout(new GridLayout(4, 13));
 
 		// create each button
-		for (int row = 0; row < 10; row++){
+		for (int row = 0; row < 4; row++){
 			for (int col = 0; col < 13; col++) {
 				// instantiate the button
 				button = new TableButton();

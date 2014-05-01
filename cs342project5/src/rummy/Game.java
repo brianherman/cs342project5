@@ -83,6 +83,12 @@ public class Game implements java.io.Serializable
 		player1.populateGui(discard2);
 		player1.updateGuiHand(player1.getHand());
 		player1.lock();
+		player1.playerTurn();
+		player1.playerTurn();
+		player1.playerTurn();
+		player1.playerTurn();
+		player1.playerTurn();
+		player1.playerTurn();
 
 	}
 	/*
@@ -127,6 +133,12 @@ public class Game implements java.io.Serializable
 		// update the GUI
 		Card discard2 = discardPile.getCurrentDiscardCard();
 		player1.populateGui(discard2);
+		player1.playerTurn();
+		player1.playerTurn();
+		player1.playerTurn();
+		player1.playerTurn();
+		player1.playerTurn();
+
 	}
 
 	public static void endGame()
