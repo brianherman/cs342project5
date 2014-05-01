@@ -143,7 +143,7 @@ public class Client extends JFrame{
 				rummy.startGame();
 				if(Game.deck== null)
 					System.err.println("DECK NULL");
-				cs342project5.GameState gs = new cs342project5.GameState(getId(), Game.deck, Game.discardPile, Game.player1.laydownArray, getPlayerID(), false, 0);
+				cs342project5.GameState gs = new cs342project5.GameState(getId(), Game.deck, Game.discardPile, Game.player1.laydownArray, getPlayerID(), false, 0, null);
 				gameState = gs;
 				send(gameState);
 			}

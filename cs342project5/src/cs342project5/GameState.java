@@ -39,7 +39,7 @@ public class GameState implements java.io.Serializable{
 	public int turn(){
 		return turn;
 	}
-	public GameState(int i, rummy.Deck d, rummy.DiscardPile dp, ArrayList<rummy.Laydowns> lds, int w, boolean unp, int t){
+	public GameState(int i, rummy.Deck d, rummy.DiscardPile dp, ArrayList<rummy.Laydowns> lds, int w, boolean unp, int t, Card fc){
 		id=i;
 		deck=d;
 		discardPile=dp;
@@ -47,6 +47,7 @@ public class GameState implements java.io.Serializable{
 		whichPlayer = w;
 		unlockNextPlayer=unp;
 		turn = t;
+		discard = fc;
 	}
 
 }

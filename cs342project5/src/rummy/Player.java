@@ -787,7 +787,8 @@ public class Player extends JFrame implements java.io.Serializable{
 		discardPileButton.setIcon(discardCard);
 
 		// then let's populate the hand
-		//updateGuiHand(hand);
+		if(hand != null)
+		updateGuiHand(hand);
 	}
 }
 

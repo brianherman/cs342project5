@@ -46,23 +46,17 @@ public class Game implements java.io.Serializable
 	public void joinGame(GameState gs)
 	{
 		int whichPlayerToUpdate = client.getPlayerID();
-
+		//Card fuckit = null;
 		discardPile = gs.getDiscardPile();
+		
 		
 		deck = gs.getDeck();
 		declarePlayers();
 		player1.lock();
 		player1.laydownArray = gs.getArrayOfLaidDownSets();
 		player1.discardPile = gs.getDiscardPile();
-		if(whichPlayerToUpdate==0){
-			player1.laydownArray = gs.getArrayOfLaidDownSets();
-		}else if(whichPlayerToUpdate==1){
-			player2.laydownArray = gs.getArrayOfLaidDownSets();
-		}else if(whichPlayerToUpdate==2){
-			player3.laydownArray = gs.getArrayOfLaidDownSets();
-		}else if(whichPlayerToUpdate==3){
-			player4.laydownArray = gs.getArrayOfLaidDownSets();
-		}
+		player1.laydownArray = gs.getArrayOfLaidDownSets();
+	
 		dealTheCards(whichPlayerToUpdate);
 //		addFirstCardToDiscardPile(); // done once per game, unless we run out of cards
 	//	sortHandsSmallToLarge(whichPlayerToUpdate);
@@ -83,7 +77,7 @@ public class Game implements java.io.Serializable
 		Card discard2 = discardPile.getCurrentDiscardCard();
 		player1.populateGui(discard2);
 		player1.updateGuiHand(player1.getHand());
-
+		player1.lock();
 
 	}
 	/*
@@ -103,14 +97,14 @@ public class Game implements java.io.Serializable
 		deck.printDeck();
 		discardPile = new DiscardPile();
 		addFirstCardToDiscardPile(); // done once per game, unless we run out of cards
-		//  deck.printDeck(); // just to make sure that one was taken off the top
+		  deck.printDeck(); // just to make sure that one was taken off the top
 
 
 		// deal the cards
 		declarePlayers();
 		dealTheCards();
 		//sortHandsSmallToLarge();
-		//        displayHandASCII();
+		        displayHandASCII();
 
 
 		// update the GUI
@@ -118,13 +112,13 @@ public class Game implements java.io.Serializable
 		player1.populateGui(discard1);
 		player1.setPlayerID(client.getPlayerID());
 
-		cs342project5.GameState gs2 = new cs342project5.GameState(client.getId(), deck, discardPile, player1.laydownArray, client.getPlayerID(), true, 0);
+		cs342project5.GameState gs2 = new cs342project5.GameState(client.getId(), deck, discardPile, player1.laydownArray, client.getPlayerID(), true, 0, discardPile.getCurrentDiscardCard());
 		client.send(gs2);
 		//starts player 1s turn, he will start player 2s turn and so on
 		player1.playerTurn();
 		//player1.lock();
 		discardPile.displayDiscardPile();
-		cs342project5.GameState gs3 = new cs342project5.GameState(client.getId(), deck, discardPile, player1.laydownArray, client.getPlayerID(), true, 0);
+		cs342project5.GameState gs3 = new cs342project5.GameState(client.getId(), deck, discardPile, player1.laydownArray, client.getPlayerID(), true, 0, discardPile.getCurrentDiscardCard());
 		client.send(gs3);
 		// update the GUI
 		Card discard2 = discardPile.getCurrentDiscardCard();
@@ -201,61 +195,61 @@ public class Game implements java.io.Serializable
 			}
 //			player1.setPlayerID(1);
 		}
-		else if (2 == numPlayers)
-		{
-			if(whoAmI>=0)
-				player1 = new Player(client, true);
-			else
-				player1 = new Player(client, false);
-			if(whoAmI==1)
-				player2 = new Player(client, true);
-			else
-				player2 = new Player(client, false);
-//			player1.setPlayerID(1);
-//			player2.setPlayerID(2);
-		}
-		else if (3 == numPlayers)
-		{
-			if(whoAmI==0)
-				player1 = new Player(client, true);
-			else
-				player1 = new Player(client, false);
-			if(whoAmI==1)
-				player2 = new Player(client, true);
-			else
-				player2 = new Player(client, false);
-			if(whoAmI==2)
-				player3 = new Player(client, true);
-			else
-				player3 = new Player(client, false);
-//			player1.setPlayerID(1);
-//			player2.setPlayerID(2);
-//			player3.setPlayerID(3);
-		}
-		else if (4 == numPlayers)
-		{
-			System.out.println("4 players playing");
-			if(whoAmI==0)
-				player1 = new Player(client, true);
-			else
-				player1 = new Player(client, false);
-			if(whoAmI==1)
-				player2 = new Player(client, true);
-			else
-				player2 = new Player(client, false);
-			if(whoAmI==2)
-				player3 = new Player(client, true);
-			else
-				player3 = new Player(client, false);
-			if(whoAmI==3)
-				player4 = new Player(client, true);
-			else
-				player4 = new Player(client, false);
-//			player1.setPlayerID(1);
-//			player2.setPlayerID(2);
-//			player3.setPlayerID(3);
-//			player4.setPlayerID(4);
-		}
+//		else if (2 == numPlayers)
+//		{
+//			if(whoAmI>=0)
+//				player1 = new Player(client, true);
+//			else
+//				player1 = new Player(client, false);
+//			if(whoAmI==1)
+//				player2 = new Player(client, true);
+//			else
+//				player2 = new Player(client, false);
+////			player1.setPlayerID(1);
+////			player2.setPlayerID(2);
+//		}
+//		else if (3 == numPlayers)
+//		{
+//			if(whoAmI==0)
+//				player1 = new Player(client, true);
+//			else
+//				player1 = new Player(client, false);
+//			if(whoAmI==1)
+//				player2 = new Player(client, true);
+//			else
+//				player2 = new Player(client, false);
+//			if(whoAmI==2)
+//				player3 = new Player(client, true);
+//			else
+//				player3 = new Player(client, false);
+////			player1.setPlayerID(1);
+////			player2.setPlayerID(2);
+////			player3.setPlayerID(3);
+//		}
+//		else if (4 == numPlayers)
+//		{
+//			System.out.println("4 players playing");
+//			if(whoAmI==0)
+//				player1 = new Player(client, true);
+//			else
+//				player1 = new Player(client, false);
+//			if(whoAmI==1)
+//				player2 = new Player(client, true);
+//			else
+//				player2 = new Player(client, false);
+//			if(whoAmI==2)
+//				player3 = new Player(client, true);
+//			else
+//				player3 = new Player(client, false);
+//			if(whoAmI==3)
+//				player4 = new Player(client, true);
+//			else
+//				player4 = new Player(client, false);
+////			player1.setPlayerID(1);
+////			player2.setPlayerID(2);
+////			player3.setPlayerID(3);
+////			player4.setPlayerID(4);
+//		}
 	}
 
 
@@ -334,7 +328,7 @@ public class Game implements java.io.Serializable
 		if (playerTurn == 1)
 		{
 			player1.playerTurn();
-			cs342project5.GameState gs = new cs342project5.GameState(client.getId(), deck, discardPile, player1.laydownArray, client.getPlayerID(), true, 0);
+			cs342project5.GameState gs = new cs342project5.GameState(client.getId(), deck, discardPile, player1.laydownArray, client.getPlayerID(), true, 0, discardPile.getCurrentDiscardCard());
 			client.send(gs);
 			client.send(new cs342project5.Envelope(client.getName(), "Unlock", client.getRecipiants()));
 			Card discard2 = discardPile.getCurrentDiscardCard();
@@ -343,31 +337,31 @@ public class Game implements java.io.Serializable
 			gameOver = player1.checkForEndOfGame();
 			player1.lock();
 		}
-		else if (playerTurn == 2)
-		{
-			//player2.playerTurn();
-			cs342project5.GameState gs = new cs342project5.GameState(client.getId(), deck, discardPile, player2.laydownArray, client.getPlayerID(), true,1);
-			client.send(gs);
-			gameOver = player2.checkForEndOfGame();
-			player2.lock();
-		}
-		else if (playerTurn == 3)
-		{
-			//player3.playerTurn();
-			cs342project5.GameState gs = new cs342project5.GameState(client.getId(), deck, discardPile, player3.laydownArray, client.getPlayerID(), true,2);
-			client.send(gs);
-			gameOver = player3.checkForEndOfGame();
-			player3.lock();
-		}
-		else
-		{
-			player4.playerTurn();
-			cs342project5.GameState gs = new cs342project5.GameState(client.getId(), deck, discardPile, player4.laydownArray, client.getPlayerID(), true,3);
-			client.send(gs);
-			gameOver = player4.checkForEndOfGame();
-			player4.lock();
-			player1.unlock();
-		}
+//		else if (playerTurn == 2)
+//		{
+//			//player2.playerTurn();
+//			cs342project5.GameState gs = new cs342project5.GameState(client.getId(), deck, discardPile, player2.laydownArray, client.getPlayerID(), true,1);
+//			client.send(gs);
+//			gameOver = player2.checkForEndOfGame();
+//			player2.lock();
+//		}
+//		else if (playerTurn == 3)
+//		{
+//			//player3.playerTurn();
+//			cs342project5.GameState gs = new cs342project5.GameState(client.getId(), deck, discardPile, player3.laydownArray, client.getPlayerID(), true,2);
+//			client.send(gs);
+//			gameOver = player3.checkForEndOfGame();
+//			player3.lock();
+//		}
+//		else
+//		{
+//			player4.playerTurn();
+//			cs342project5.GameState gs = new cs342project5.GameState(client.getId(), deck, discardPile, player4.laydownArray, client.getPlayerID(), true,3);
+//			client.send(gs);
+//			gameOver = player4.checkForEndOfGame();
+//			player4.lock();
+//			player1.unlock();
+//		}
 		if (gameOver)
 		{
 			endGame();
