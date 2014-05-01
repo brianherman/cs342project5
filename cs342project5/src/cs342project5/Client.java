@@ -143,7 +143,7 @@ public class Client extends JFrame{
 				rummy.startGame();
 				if(Game.deck== null)
 					System.err.println("DECK NULL");
-				cs342project5.GameState gs = new cs342project5.GameState(getId(), Game.deck, Game.discardPile, Game.player1.laydownArray, getPlayerID());
+				cs342project5.GameState gs = new cs342project5.GameState(getId(), Game.deck, Game.discardPile, Game.player1.laydownArray, getPlayerID(), false);
 				gameState = gs;
 				send(gameState);
 			}
@@ -190,7 +190,17 @@ public class Client extends JFrame{
 		}
 
 	}
-
+	public Vector<String> getRecipiants(){
+		Vector<String> recipiants = new Vector<String>();
+		for(int i=0; i<usersModel.size(); i++)
+		{
+			recipiants.add((String)usersModel.getElementAt(i));
+		}
+		return recipiants;
+	}
+	public String getName(){
+		return name;
+	}
 	/**
 	 * Connects to the server.
 	 */
@@ -217,6 +227,7 @@ public class Client extends JFrame{
 				"brian");
 		if(name == null)
 			return;
+		this.setTitle(name);
 		try{
 			//Open the socket and get the input/output streams.
 			socket = new Socket(ipAddress,25565);
@@ -338,6 +349,16 @@ public class Client extends JFrame{
 							System.out.println(getNumber[1]);
 							
 							playerID=Integer.parseInt(getNumber[1]);
+						}
+						if(e.message().equals("Unlock")){
+							rummy.player1.unlock();
+							rummy.update(gameState);
+							continue;
+						}
+						if(e.message().equals("Lock")){
+							rummy.player1.lock();
+							rummy.update(gameState);
+							continue;
 						}
 						//Print out the message.
 						chat.setText(chat.getText() + e.sender() + ": "+ e.message() +"\n");

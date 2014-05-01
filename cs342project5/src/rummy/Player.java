@@ -623,7 +623,7 @@ public class Player extends JFrame implements java.io.Serializable{
 	}
 
 	public void setPlayerID(int playerID) {
-		this.setTitle(""+playerID);
+		this.setTitle(""+playerID + client.getName());
 		this.playerID = playerID;
 	}
 

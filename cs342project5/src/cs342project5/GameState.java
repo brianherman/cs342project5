@@ -6,6 +6,7 @@ import rummy.Deck;
 import rummy.DiscardPile;
 import rummy.Game;
 import rummy.LaidDownSetsOfCards;
+import rummy.Player;
 
 public class GameState implements java.io.Serializable{
 	private rummy.DiscardPile discardPile;
@@ -13,6 +14,8 @@ public class GameState implements java.io.Serializable{
 	private ArrayList<rummy.Laydowns> arrayOfLaidDownSets = new ArrayList<rummy.Laydowns>();
 	private int id;
 	private int whichPlayer;
+	private boolean unlockNextPlayer;
+
 	public rummy.DiscardPile getDiscardPile() {
 		return discardPile;
 	}
@@ -28,12 +31,13 @@ public class GameState implements java.io.Serializable{
 	public int whichPlayer(){
 		return whichPlayer;
 	}
-	public GameState(int i, rummy.Deck d, rummy.DiscardPile dp, ArrayList<rummy.Laydowns> lds, int w){
+	public GameState(int i, rummy.Deck d, rummy.DiscardPile dp, ArrayList<rummy.Laydowns> lds, int w, boolean unp){
 		id=i;
 		deck=d;
 		discardPile=dp;
 		arrayOfLaidDownSets=lds;
 		whichPlayer = w;
+		unlockNextPlayer=unp;
 	}
 
 }
