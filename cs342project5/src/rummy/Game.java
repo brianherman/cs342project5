@@ -47,6 +47,7 @@ public class Game implements java.io.Serializable
 	{
 		int whichPlayerToUpdate = client.getPlayerID();
 		//Card fuckit = null;
+		
 		discardPile = gs.getDiscardPile();
 		
 		
@@ -63,7 +64,7 @@ public class Game implements java.io.Serializable
 		//displayHandASCII();
 
 		// we're gonna need to send some variables along with the methods. The discard and the table
-		
+		discardPile.displayDiscardPile();
 		Card discard1 = discardPile.getCurrentDiscardCard();
 		discardPile.displayDiscardPile();
 		player1.populateGui(discard1);
@@ -98,8 +99,7 @@ public class Game implements java.io.Serializable
 		discardPile = new DiscardPile();
 		addFirstCardToDiscardPile(); // done once per game, unless we run out of cards
 		  deck.printDeck(); // just to make sure that one was taken off the top
-
-
+		  
 		// deal the cards
 		declarePlayers();
 		dealTheCards();
@@ -251,7 +251,6 @@ public class Game implements java.io.Serializable
 ////			player4.setPlayerID(4);
 //		}
 	}
-
 
 
 

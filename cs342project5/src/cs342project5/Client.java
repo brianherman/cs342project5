@@ -33,7 +33,7 @@ public class Client extends JFrame{
 	private JMenuItem newGame;
 	private cs342project5.Game game;
 	private rummy.Game rummy;
-	private GameState gameState;
+	public GameState gameState;
 	private String name;
 	private int playerID;
 
@@ -153,6 +153,8 @@ public class Client extends JFrame{
 				recipiants.add("Server");
 				send(new Envelope(name, "JoinGame. 0"  , recipiants));
 				rummy.joinGame(gameState);
+				send(new Envelope(name, "Lock"  , recipiants));
+
 			}
 			/*
 			 * If the user pressed enter in the message text box.
@@ -350,12 +352,12 @@ public class Client extends JFrame{
 							
 							playerID=Integer.parseInt(getNumber[1]);
 						}
-						if(e.message().equals("Unlock")){
+						if(e.message().equals("Unlock")&& !e.sender().equals(name)){
 							Game.player1.unlock();
 							rummy.update(gameState);
 							continue;
 						}
-						if(e.message().equals("Lock")){
+						if(e.message().equals("Lock") && !e.sender().equals(name)){
 							Game.player1.lock();
 							rummy.update(gameState);
 							continue;
