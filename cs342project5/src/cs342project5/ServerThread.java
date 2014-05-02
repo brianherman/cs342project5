@@ -30,13 +30,13 @@ public class ServerThread implements Runnable {
 		try {
 			out = new ObjectOutputStream(socket.getOutputStream());
 			in = new ObjectInputStream(socket.getInputStream());
-
-			while(true){
-				Envelope m = null;
-				Game g = null;
-				GameState gs = null;
+			Envelope m = null;
+			Game g = null;
+			GameState gs = null;
+			Object o = null;
+			while((o = in.readObject())!= null){
+			
 				//read in a evenlope.
-				Object o = in.readObject();
 				if(o instanceof Envelope){
 					m = (Envelope)o;
 				}else if(o instanceof Game){

@@ -49,5 +49,8 @@ public class GameState implements java.io.Serializable{
 		turn = t;
 		discard = fc;
 	}
+	public boolean getUnlockNextPlayer() {
+		return unlockNextPlayer;
+	}
 
 }

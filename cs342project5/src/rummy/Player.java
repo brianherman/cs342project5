@@ -19,7 +19,7 @@ import java.util.Collections;
  */
 public class Player extends JFrame implements java.io.Serializable{
 	// the array of cards that is the player's hand
-	private ArrayList<Card> hand;
+	public ArrayList<Card> hand;
 	private TableButton[][] buttons = new TableButton[10][13];
 	// declare the array of sets
 //	public static ArrayList<LaidDownSetsOfCards> laydownArray = new ArrayList<LaidDownSetsOfCards>();
@@ -418,7 +418,7 @@ public class Player extends JFrame implements java.io.Serializable{
 				if (setResult == 0){
 					JOptionPane.showMessageDialog(this,
 							"Invalid laydown.  Please choose again.");
-					stage2();
+
 				}
 				else if (setResult == 1){
 					laydownArray.add(new Laydowns(set, false));
@@ -667,7 +667,7 @@ public class Player extends JFrame implements java.io.Serializable{
 	// returns 0 if illegal add, returnss 1 if legal add
 
 	public int isLegalAddToExistingSet(Card card) {
-
+		laydownArray = Client.gameState.getArrayOfLaidDownSets();
 		for (int i = 0; i < laydownArray.size(); i++) {
 			if (laydownArray.get(i).getIfRun() == false
 					&& laydownArray.get(i).getLaydown().size() == 3
@@ -722,12 +722,14 @@ public class Player extends JFrame implements java.io.Serializable{
 	public void removeCardsAfterLaydown(String s){
 		
 		int count=0;
-		for (int i = 0; i < s.length(); i++)
+		if(s.length() == 0)
+			return;
+		for (int i = 0; i < s.length(); i++){
 			if (Character.isDigit(s.charAt(i))){
 				hand.remove(Character.getNumericValue(s.charAt(i)-1-count));
 				count++;
 			}
-		
+		}
 	}
 	
 	public void updateLaydownTable(Laydowns laydown){
@@ -739,8 +741,8 @@ public class Player extends JFrame implements java.io.Serializable{
 			ImageIcon newImage = new ImageIcon(card.getCardString());
 			buttons[card.getSuit()-1][card.getRank()-1].setIcon(newImage);
 		}
-		cs342project5.GameState gs2 = new cs342project5.GameState(client.getId(), Game.deck, discardPile, Game.player1.laydownArray, client.getPlayerID(), true, 0, discardPile.getCurrentDiscardCard());
-		client.send(gs2);
+//		cs342project5.GameState gs2 = new cs342project5.GameState(client.getId(), Game.deck, discardPile, Game.player1.laydownArray, client.getPlayerID(), true, 0, discardPile.getCurrentDiscardCard());
+//		client.send(gs2);
 
 	}
 	

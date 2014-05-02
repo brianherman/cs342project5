@@ -2,6 +2,7 @@ package rummy;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Random;
 
 /**
  * Created by bob on 4/18/14.
@@ -12,10 +13,12 @@ import java.util.Collections;
 public class Deck implements java.io.Serializable
 {
     public ArrayList<Card> deck = new ArrayList<Card>();
-
+    
+	
     // deck constructor
     public Deck()
     {
+
         // create the deck
         for (int i = 1; i < 5; i++)
             for (int j = 1; j < 14; j++)
@@ -62,7 +65,7 @@ public class Deck implements java.io.Serializable
     public Card drawCardFromDeck()
     {
         Card tempCard = deck.remove(0); // get the top card in the deck
-                     				    // remove it from the deck
+        System.out.println(tempCard.getCardString());             				    // remove it from the deck
         return tempCard;                // give the card to the player
     }
     public int getSize(){

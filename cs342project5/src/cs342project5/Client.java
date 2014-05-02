@@ -33,7 +33,7 @@ public class Client extends JFrame{
 	private JMenuItem newGame;
 	private cs342project5.Game game;
 	private rummy.Game rummy;
-	public GameState gameState;
+	public static GameState gameState;
 	private String name;
 	private int playerID;
 
@@ -143,7 +143,7 @@ public class Client extends JFrame{
 				rummy.startGame();
 				if(Game.deck== null)
 					System.err.println("DECK NULL");
-				cs342project5.GameState gs = new cs342project5.GameState(getId(), Game.deck, Game.discardPile, Game.player1.laydownArray, getPlayerID(), false, 0, null);
+				cs342project5.GameState gs = new cs342project5.GameState(getId(), rummy.deck, rummy.discardPile, rummy.player1.laydownArray, getPlayerID(), true, 0, null);
 				gameState = gs;
 				send(gameState);
 			}
@@ -325,7 +325,9 @@ public class Client extends JFrame{
 				{ 
 					if(o instanceof GameState){
 						gameState = (GameState)o;
-						rummy.update(gameState);
+						if(gameState.getUnlockNextPlayer()){
+							rummy.update(gameState);
+						}
 						chat.append("gamestate recieved \n");
 					}else if(o instanceof cs342project5.Game){
 						game = (cs342project5.Game) o;
@@ -355,13 +357,21 @@ public class Client extends JFrame{
 						}
 						if(e.message().equals("Unlock")&& !e.sender().equals(name)){
 							Game.player1.unlock();
-							rummy.update(gameState);
-							continue;
+							if(gameState != null){
+								if(gameState.getUnlockNextPlayer()){
+									rummy.update(gameState);
+								}
+							}
+							//			continue;
 						}
 						if(e.message().equals("Lock") && !e.sender().equals(name)){
 							Game.player1.lock();
-							rummy.update(gameState);
-							continue;
+							if(gameState != null){
+								if(gameState.getUnlockNextPlayer()){
+									rummy.update(gameState);
+								}
+							}
+							//		continue;
 						}
 						//Print out the message.
 						chat.setText(chat.getText() + e.sender() + ": "+ e.message() +"\n");
